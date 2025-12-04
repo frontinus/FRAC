@@ -1,0 +1,19 @@
+
+Cleaning up...
+Running: bpftool net detach xdp dev h2-eth0
+Loading xdp_prog.o...
+Running: bpftool prog load xdp_prog.o /sys/fs/bpf/xdp_prog
+Attaching to h2-eth0...
+Running: bpftool net attach xdp pinned /sys/fs/bpf/xdp_prog dev h2-eth0
+XDP program attached. Reading trace_pipe (Ctrl+C to stop)...
+----------------------------------------
+handler14-8456    [002] ..s2. 12804.803256: bpf_trace_printk: Packet: src=0x100000a dst=0x200000a
+
+python3-8505    [001] ..s2. 12805.843633: bpf_trace_printk: Packet: src=0x100000a dst=0x200000a
+
+python3-8505    [002] ..s2. 12806.878827: bpf_trace_printk: Packet: src=0x100000a dst=0x200000a
+
+python3-8505    [001] ..s2. 12807.923065: bpf_trace_printk: Packet: src=0x100000a dst=0x200000a
+
+python3-8505    [000] ..s2. 12808.983819: bpf_trace_printk: Packet: src=0x100000a dst=0x200000a
+
