@@ -28,7 +28,7 @@ class TrafficStream(threading.Thread):
         self.stop_event = threading.Event()
         self.daemon = True
         self.name_type = "Generic"
-        self.stats = {'sent_packets': 0, 'errors': 0}
+        self.stats = {'sent_packets': 0, 'errors': 0, 'bytes_sent': 0}
 
     def run(self):
         print(f"[{self.name_type}] Starting stream to {self.target_ip}:{self.target_port}...")
@@ -47,7 +47,14 @@ class TrafficStream(threading.Thread):
                 # print(f"[{self.name_type}] Error: {e}")
                 time.sleep(1) # Prevent tight error loop
 
+        duration_actual = time.time() - start_time
+        if duration_actual > 0:
+            mbps = (self.stats['bytes_sent'] * 8) / (duration_actual * 1000000)
+        else:
+            mbps = 0.0
+            
         print(f"[{self.name_type}] Finished. Stats: {self.stats}")
+        print(f"[{self.name_type}] Throughput: {mbps:.2f} Mbps")
 
     def generate_packet(self):
         raise NotImplementedError
@@ -56,25 +63,40 @@ class TrafficStream(threading.Thread):
         self.stop_event.set()
 
 class CoTStream(TrafficStream):
-    def __init__(self, target_ip, target_port, duration, rate=1.0):
+    def __init__(self, target_ip, target_port, duration, rate=1.0, encrypt=False, dscp=DSCP_EF, udp=False):
         super().__init__(target_ip, target_port, duration)
         self.rate = rate
+        self.packet_size = 512 # Standard CoT is smallish
         self.name_type = "CoT"
-        self.sock = None
+        self.encrypt = encrypt
+        self.udp = udp
         self.uid = f"uuid-{random.randint(1000,9999)}"
         self.lat = 34.0
         self.lon = -118.0
-
-    def run(self):
-        print(f"[{self.name_type}] Connecting TCP to {self.target_ip}:{self.target_port} (DSCP: EF)...")
-        try:
+        
+        # Setup Socket
+        if self.udp:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        else:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, DSCP_EF)
-            self.sock.connect((self.target_ip, self.target_port))
-        except Exception as e:
-            print(f"[{self.name_type}] Connection failed: {e}")
-            return
+            
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, dscp) # Set DSCP
+        
+        if not self.udp:
+            try:
+                self.sock.connect((self.target_ip, self.target_port))
+            except Exception as e:
+                print(f"[{self.name_type}] Connection failed: {e}")
+                self.stop()
+                return
 
+        # Pre-generate XML payload
+        self.pregenerated_data = self._create_packet_data()
+        
+    def run(self):
+        print(f"[{self.name_type}] Starting stream to {self.target_ip}:{self.target_port} (DSCP: EF)...")
+        
         super().run()
         
         if self.sock:
@@ -83,14 +105,10 @@ class CoTStream(TrafficStream):
             except:
                 pass
 
-    def generate_packet(self):
-        self.lat += random.uniform(-0.001, 0.001)
-        self.lon += random.uniform(-0.001, 0.001)
-        
+    def _create_packet_data(self):
         now = datetime.datetime.utcnow()
         time_str = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         stale_str = (now + datetime.timedelta(minutes=5)).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        
         xml = f'''<?xml version="1.0" standalone="yes"?>
 <event version="2.0" uid="{self.uid}" type="a-f-G-U-C" time="{time_str}" start="{time_str}" stale="{stale_str}">
     <point lat="{self.lat}" lon="{self.lon}" hae="0.0" ce="9999999" le="9999999"/>
@@ -98,15 +116,38 @@ class CoTStream(TrafficStream):
         <contact callsign="GroundUnit-{self.uid[-4:]}"/>
     </detail>
 </event>'''
-        data = xml.encode('utf-8')
+        event_data = xml.encode('utf-8')
+        if getattr(self, 'encrypt', False):
+             event_data = b'\xAA' * len(event_data)
+        
+        # Batching Optimization: Repeat 10 times to reduce syscalls
+        # Batching Optimization: Disabled for stability verification
+        self.batch_size = 10
+        return event_data * self.batch_size
+        
+    def generate_packet(self):
         try:
-            self.sock.sendall(data)
-            self.stats['sent_packets'] += 1
+            if self.udp:
+                self.sock.sendto(self.pregenerated_data, (self.target_ip, self.target_port))
+            else:
+                self.sock.sendall(self.pregenerated_data)
+            self.stats['sent_packets'] += self.batch_size
+            self.stats['bytes_sent'] += len(self.pregenerated_data)
+            
+            # Log sample of sent data
+            if self.stats['sent_packets'] <= self.batch_size * 2: # Print only first couple of batches
+                 data_sample = self.pregenerated_data[:100]
+                 try:
+                     print(f"[{self.name_type}] Tx Sample: {data_sample.decode('utf-8')}...")
+                 except:
+                     print(f"[{self.name_type}] Tx Sample: {data_sample} (Binary)")
+
         except Exception as e:
             print(f"[{self.name_type}] Send failed: {e}")
             self.stop()
             
-        time.sleep(1.0 / self.rate)
+        if self.rate < 1000:
+            time.sleep(1.0 / self.rate)
         return True
 
 class VideoStream(TrafficStream):
@@ -116,7 +157,9 @@ class VideoStream(TrafficStream):
         self.file_path = file_path
         self.name_type = "Video"
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # Allow reuse
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, DSCP_AF41)
+        self.sock.bind(('0.0.0.0', 5555)) # Fixed Source Port for simplified compression context
         
         self.packet_size = 1400
         packets_per_sec = (self.bitrate_mbps * 1000 * 1000) / (self.packet_size * 8)
@@ -147,6 +190,7 @@ class VideoStream(TrafficStream):
 
         self.sock.sendto(data, (self.target_ip, self.target_port))
         self.stats['sent_packets'] += 1
+        self.stats['bytes_sent'] += len(data)
         
         elapsed = time.time() - start_gen
         sleep_time = self.interval - elapsed
@@ -199,9 +243,16 @@ class VoiceStream(TrafficStream):
 
         packet = header + payload
         
-        self.sock.sendto(packet, (self.target_ip, self.target_port))
-        self.stats['sent_packets'] += 1
-        
+        try:
+            self.sock.sendto(packet, (self.target_ip, self.target_port))
+            self.stats['sent_packets'] += 1
+            self.stats['bytes_sent'] += len(packet)
+            if self.stats['sent_packets'] % 100 == 0:
+                print(f"[DEBUG] VoiceStream: Sent {self.stats['sent_packets']} packets to {self.target_ip}:{self.target_port}")
+        except Exception as e:
+            self.stats['errors'] += 1
+            print(f"[ERROR] VoiceStream: Send failed: {e}")
+            
         self.seq_num = (self.seq_num + 1) & 0xFFFF
         self.timestamp = (self.timestamp + 160) & 0xFFFFFFFF
         
@@ -248,6 +299,7 @@ class XMPPStream(TrafficStream):
         try:
             self.sock.sendall(xml.encode('utf-8'))
             self.stats['sent_packets'] += 1
+            self.stats['bytes_sent'] += len(xml.encode('utf-8'))
         except Exception as e:
             print(f"[{self.name_type}] Send failed: {e}")
             self.stop()
@@ -266,7 +318,33 @@ def get_input_def(prompt, default):
 def main_menu():
     active_threads = []
     video_queue = [] # List of config dicts
+    queue_state = {'status': 'Idle', 'current_idx': -1, 'running': False}
     
+    # Thread to handle queue execution
+    def run_queue_thread(q_items, active_threads_ref, state_ref):
+        state_ref['running'] = True
+        state_ref['status'] = 'Running'
+        
+        for i, item in enumerate(q_items):
+            state_ref['current_idx'] = i
+            # state_ref['status'] = f"Playing {os.path.basename(item['file'])}"
+            
+            if item['type'] == 'video':
+                t = VideoStream(item['ip'], item['port'], item['duration'], file_path=item['file'])
+            else:
+                t = VoiceStream(item['ip'], item['port'], item['duration'], file_path=item['file'])
+            
+            # Add to active threads so it shows up in the main list
+            active_threads_ref.append(t)
+            t.start()
+            t.join() # Wait for this item to finish before starting next
+            
+            # Thread is dead now, main loop will clean it up from active_threads
+            
+        state_ref['running'] = False
+        state_ref['status'] = 'Finished'
+        state_ref['current_idx'] = -1
+
     while True:
         os.system('clear' if os.name == 'posix' else 'cls')
         print("=== Traffic Generator Console ===")
@@ -276,9 +354,14 @@ def main_menu():
             loop_str = " (Loop)" if t.loop else ""
             print(f"  {i+1}. {t.name_type} -> {t.target_ip}:{t.target_port}{loop_str} ({status}) Stats: {t.stats}")
         
-        print("\nQueue (Pending):")
+        print(f"\nQueue (Status: {queue_state['status']}):")
         for i, item in enumerate(video_queue):
-            print(f"  {i+1}. {item['type']} -> {item['file']} ({item['duration']}s)")
+            marker = " "
+            if queue_state['running'] and i == queue_state['current_idx']:
+                marker = ">"
+            elif queue_state['running'] and i < queue_state['current_idx']:
+                marker = "x"
+            print(f" {marker} {i+1}. {item['type']} -> {item['file']} ({item['duration']}s)")
 
         print("\nOptions:")
         print("1. Add CoT Stream (Immediate)")
@@ -287,10 +370,15 @@ def main_menu():
         print("4. Add XMPP Chat Stream (Immediate)")
         print("5. Add File to Queue")
         print("6. Run Queue Sequence")
-        print("7. Stop All & Exit")
+        print("7. Clear Queue")
+        print("8. Stop All & Exit")
         
-        choice = input("\nSelect: ")
+        print("\n(Press Enter to refresh view)")
+        choice = input("Select: ")
         
+        # Clean up finished threads strictly before processing new actions to keep list clean
+        active_threads = [t for t in active_threads if t.is_alive()]
+
         if choice == '1':
             ip = get_input_def("Target IP", "127.0.0.1")
             port = int(get_input_def("Port", 8087))
@@ -330,7 +418,8 @@ def main_menu():
         elif choice == '5':
             # Add to queue
             q_type = get_input_def("Type (video/voice)", "video")
-            path = get_input_def("File Path", "video.mp4")
+            default_file = "isr_video.mp4" if q_type == 'video' else "voice.wav"
+            path = get_input_def("File Path", default_file)
             dur = int(get_input_def("Duration (s)", 10))
             ip = get_input_def("Target IP", "127.0.0.1")
             port = int(get_input_def("Port", 5000 if q_type == 'video' else 5060))
@@ -341,39 +430,78 @@ def main_menu():
             })
             
         elif choice == '6':
-            # Run queue
-            # For simplicity, launch them sequentially in a separate thread manager
-            def run_queue(q_items):
-                print("Starting queue playback...")
-                for item in q_items:
-                    print(f"Playing {item['file']}...")
-                    if item['type'] == 'video':
-                        t = VideoStream(item['ip'], item['port'], item['duration'], file_path=item['file'])
-                    else:
-                        t = VoiceStream(item['ip'], item['port'], item['duration'], file_path=item['file'])
-                    t.start()
-                    t.join() # Wait for it to finish
-                print("Queue finished.")
-            
-            t = threading.Thread(target=run_queue, args=(video_queue,))
-            t.daemon = True
-            t.start()
-            video_queue = [] # Clear queue? or keep? Let's clear.
-            
+            if queue_state['running']:
+                print("Queue is already running!")
+                time.sleep(1)
+            elif not video_queue:
+                print("Queue is empty!")
+                time.sleep(1)
+            else:
+                t = threading.Thread(target=run_queue_thread, args=(video_queue, active_threads, queue_state))
+                t.daemon = True
+                t.start()
+                
         elif choice == '7':
+            if queue_state['running']:
+                print("Cannot clear queue while running.")
+                time.sleep(1)
+            else:
+                video_queue = []
+                print("Queue cleared.")
+                time.sleep(1)
+            
+        elif choice == '8':
             print("Stopping all threads...")
             for t in active_threads:
                 t.stop()
             # Wait a bit
             sys.exit(0)
-            
-        # Clean up finished threads
-        active_threads = [t for t in active_threads if t.is_alive()]
-        if len(active_threads) > 0:
-             time.sleep(1)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("target_ip", nargs="?", help="Target IP address")
+    parser.add_argument("--mode", choices=["cot", "video", "voice", "xmpp", "mixed"], help="Traffic mode")
+    parser.add_argument("--duration", type=int, default=30, help="Duration in seconds")
+    parser.add_argument("--rate", type=float, default=1.0, help="Packets per second for CoT")
+    parser.add_argument("--encrypt", action="store_true", help="Simulate encryption (Send 0xAA)")
+    parser.add_argument("--dscp", type=lambda x: int(x,0), default=DSCP_EF, help="DSCP Value (can use hex 0x50)")
+    parser.add_argument("--port", type=int, default=8087, help="Target Port (default 8087)")
+    
+    parser.add_argument("--udp", action="store_true", help="Use UDP for CoT")
+    
+    args = parser.parse_args()
+
+    # Patched Run Logic to use Encrypt Flag
+    if args.encrypt:
+        print("Encryption Enabled (Simulated)")
+        pass
+
     try:
-        main_menu()
+        if args.target_ip and args.mode:
+            # CLI Mode
+            threads = []
+            if args.mode == "cot" or args.mode == "mixed":
+                # CoT Stream
+                cot = CoTStream(args.target_ip, args.port, args.duration, rate=args.rate, encrypt=args.encrypt, dscp=args.dscp, udp=args.udp)
+                threads.append(cot)
+                if args.mode == "mixed":
+                    threads.append(VideoStream(args.target_ip, 5000, args.duration))
+            elif args.mode == "video":
+                t = VideoStream(args.target_ip, args.port if args.port != 8087 else 5000, args.duration, bitrate_mbps=args.rate)
+                threads.append(t)
+            elif args.mode == "voice":
+                t = VoiceStream(args.target_ip, 5060, args.duration)
+                threads.append(t)
+            elif args.mode == "mixed":
+                threads.append(CoTStream(args.target_ip, 8087, args.duration))
+                threads.append(VideoStream(args.target_ip, 5000, args.duration))
+                
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        else:
+            # Interactive Mode
+            main_menu()
     except KeyboardInterrupt:
         print("\nForce Close")

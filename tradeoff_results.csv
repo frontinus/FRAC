@@ -1,0 +1,9 @@
+Bandwidth_Mbps,Mode,Throughput_Mbps
+1mbit,Baseline,1.09
+1mbit,SCHC,1.07
+10mbit,Baseline,9.72
+10mbit,SCHC,9.68
+100mbit,Baseline,82.64
+100mbit,SCHC,84.16
+500mbit,Baseline,213.75
+500mbit,SCHC,212.94
