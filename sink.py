@@ -15,13 +15,14 @@ import sys
 import json
 import re
 import threading
+import zlib
 
 # XML reconstruction template
 COT_TEMPLATE = """<?xml version="1.0" standalone="yes"?>
-<event version="{event.version}" uid="{event.uid}" type="{event.type}" time="{event.time}" start="{event.start}" stale="{event.stale}">
-    <point lat="{point.lat}" lon="{point.lon}" hae="{point.hae}" ce="{point.ce}" le="{point.le}"/>
+<event version="{event_version}" uid="{event_uid}" type="{event_type}" time="{event_time}" start="{event_start}" stale="{event_stale}">
+    <point lat="{point_lat}" lon="{point_lon}" hae="{point_hae}" ce="{point_ce}" le="{point_le}"/>
     <detail>
-        <contact callsign="{contact.callsign}"/>
+        <contact callsign="{contact_callsign}"/>
     </detail>
 </event>"""
 
@@ -34,6 +35,7 @@ CONTACT_RE = re.compile(r'<contact\s+([^/]*)/>')
 TYPE_SYNC = 0x00
 TYPE_DELTA = 0x01
 TYPE_INCREMENTAL = 0x02
+TYPE_HC = 0x03
 
 def signal_handler(sig, frame):
     print('\nExiting...')
@@ -50,25 +52,25 @@ def xml_to_fields(payload_bytes):
     m = EVENT_RE.search(xml_str)
     if m:
         for key, val in ATTR_RE.findall(m.group(1)):
-            fields[f"event.{key}"] = val
+            fields[f"event_{key}"] = val
     m = POINT_RE.search(xml_str)
     if m:
         for key, val in ATTR_RE.findall(m.group(1)):
-            fields[f"point.{key}"] = val
+            fields[f"point_{key}"] = val
     m = CONTACT_RE.search(xml_str)
     if m:
         for key, val in ATTR_RE.findall(m.group(1)):
-            fields[f"contact.{key}"] = val
+            fields[f"contact_{key}"] = val
     return fields if fields else None
 
 def fields_to_xml(fields):
     """Reconstruct XML from field dict."""
     try:
         return COT_TEMPLATE.format(**{k: fields.get(k, '?') for k in [
-            'event.version', 'event.uid', 'event.type',
-            'event.time', 'event.start', 'event.stale',
-            'point.lat', 'point.lon', 'point.hae', 'point.ce', 'point.le',
-            'contact.callsign'
+            'event_version', 'event_uid', 'event_type',
+            'event_time', 'event_start', 'event_stale',
+            'point_lat', 'point_lon', 'point_hae', 'point_ce', 'point_le',
+            'contact_callsign'
         ]}).encode('utf-8')
     except Exception as e:
         return f"<reconstruction_error: {e}>".encode('utf-8')
@@ -132,24 +134,34 @@ def process_data(data, addr):
         if fields:
             incr_history[addr_key] = fields
         decoded = payload
-        print(f"[Sink] Rx SYNC: {decoded[:20]}... ({len(payload)}B)")
+        print(f"[Sink] Rx SYNC: {decoded[:20]}... ({len(payload)}B)", flush=True)
         
     elif pkt_type == TYPE_DELTA:
-        # XOR delta — decode against previous full payload
+        # zlib-compressed XOR delta — decompress then decode against baseline
         last_payload = delta_history.get(addr_key)
-        if last_payload and len(last_payload) == len(payload):
-            xor_res = bytearray(len(payload))
-            for i in range(len(payload)):
-                xor_res[i] = payload[i] ^ last_payload[i]
-            decoded = bytes(xor_res)
-            delta_history[addr_key] = decoded
-            # Also update incremental history
-            fields = xml_to_fields(decoded)
-            if fields:
-                incr_history[addr_key] = fields
-            print(f"[Sink] Rx DELTA: {decoded[:20]}... (Decoded, {len(decoded)}B)")
+        if last_payload:
+            try:
+                xor_diff = zlib.decompress(payload)
+            except zlib.error:
+                # Fallback: treat as uncompressed XOR diff (backward compat)
+                xor_diff = payload
+            
+            if len(last_payload) == len(xor_diff):
+                xor_res = bytearray(len(xor_diff))
+                for i in range(len(xor_diff)):
+                    xor_res[i] = xor_diff[i] ^ last_payload[i]
+                decoded = bytes(xor_res)
+                delta_history[addr_key] = decoded
+                # Also update incremental history
+                fields = xml_to_fields(decoded)
+                if fields:
+                    incr_history[addr_key] = fields
+                print(f"[Sink] Rx DELTA: {len(payload)}B wire -> {len(decoded)}B decoded", flush=True)
+            else:
+                print(f"[Sink] Rx DELTA FAILED (Len Mismatch: diff={len(xor_diff)} vs ref={len(last_payload)})", flush=True)
+                decoded = payload
         else:
-            print(f"[Sink] Rx DELTA FAILED (Missing History/Len Mismatch)")
+            print(f"[Sink] Rx DELTA FAILED (Missing History)", flush=True)
             decoded = payload
     
     elif pkt_type == TYPE_INCREMENTAL:
@@ -165,18 +177,33 @@ def process_data(data, addr):
                 decoded = fields_to_xml(old_fields)
                 # Also update delta history with reconstructed payload
                 delta_history[addr_key] = decoded
-                print(f"[Sink] Rx INCREMENTAL: {len(diff)} fields changed, {len(payload)}B wire -> {len(decoded)}B reconstructed")
+                print(f"[Sink] Rx INCREMENTAL: {len(diff)} fields changed, {len(payload)}B wire -> {len(decoded)}B reconstructed", flush=True)
             except json.JSONDecodeError as e:
-                print(f"[Sink] Rx INCREMENTAL FAILED (JSON parse: {e})")
+                print(f"[Sink] Rx INCREMENTAL FAILED (JSON parse: {e})", flush=True)
                 decoded = payload
         else:
-            print(f"[Sink] Rx INCREMENTAL FAILED (No baseline)")
+            print(f"[Sink] Rx INCREMENTAL FAILED (No baseline)", flush=True)
             decoded = payload
-    
+
+    elif pkt_type == TYPE_HC:
+        # Header Compression only
+        decoded = payload
+        print(f"[Sink] Rx HC: {len(payload)}B wire -> {len(decoded)}B reconstructed", flush=True)
+
     else:
-        # Unknown type — treat as raw
-        decoded = data
-        print(f"Rx: {decoded[:20]}...")
+        # Unknown type — check if it is raw XML (starts with '<?xml')
+        if data.startswith(b'<?xml'):
+            # Treat as accidental SYNC — update history
+            delta_history[addr_key] = data
+            fields = xml_to_fields(data)
+            if fields:
+                incr_history[addr_key] = fields
+            print(f"[Sink] Auto-Sync from Raw XML: {data[:20]}... ({len(data)}B)", flush=True)
+            decoded = data
+        else:
+            # Unknown type and not XML — treat as raw
+            decoded = data
+            print(f"Rx Unknown [0x{pkt_type:02x}]: {decoded[:20]}...", flush=True)
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)

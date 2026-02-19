@@ -272,9 +272,11 @@ usage:
     
     /* Start Threads if Mode 0 */
     if (mode == 0) {
-        pthread_t tid_key, tid_delta;
+        pthread_t tid_key;
         pthread_create(&tid_key, NULL, key_manager, NULL);
-        pthread_create(&tid_delta, NULL, delta_worker, NULL);
+        /* Delta worker disabled — using Python delta_agent.py instead */
+        // pthread_t tid_delta;
+        // pthread_create(&tid_delta, NULL, delta_worker, NULL);
     }
 
     /* Open BPF application */
@@ -335,7 +337,7 @@ usage:
     ctx.ip.daddr = inet_addr("10.0.2.1");
     
     ctx.udp.source = 0; // Dynamic (saved in compressed header)
-    ctx.udp.dest = htons(5000);
+    ctx.udp.dest = htons(8087);
     ctx.udp.len = 0; // Dynamic
     ctx.udp.check = 0;
 
@@ -351,7 +353,7 @@ usage:
     
     /* TCP Template */
     ctx_tcp.tcp.source = 0; // Dynamic
-    ctx_tcp.tcp.dest = htons(5000);
+    ctx_tcp.tcp.dest = htons(8087);
     ctx_tcp.tcp.seq = 0; // Dynamic
     ctx_tcp.tcp.ack_seq = 0; // Dynamic
     ctx_tcp.tcp.doff = 0; // Dynamic? No, we restore to 5(20 bytes)

@@ -63,10 +63,11 @@ class TrafficStream(threading.Thread):
         self.stop_event.set()
 
 class CoTStream(TrafficStream):
-    def __init__(self, target_ip, target_port, duration, rate=1.0, encrypt=False, dscp=DSCP_EF, udp=False):
+    def __init__(self, target_ip, target_port, duration, rate=1.0, encrypt=False, dscp=DSCP_EF, udp=False, payload_size=0):
         super().__init__(target_ip, target_port, duration)
         self.rate = rate
         self.packet_size = 512 # Standard CoT is smallish
+        self.payload_size_target = payload_size
         self.name_type = "CoT"
         self.encrypt = encrypt
         self.udp = udp
@@ -117,22 +118,33 @@ class CoTStream(TrafficStream):
     </detail>
 </event>'''
         event_data = xml.encode('utf-8')
+        
+        # Padding Logic
+        if self.payload_size_target > 0:
+            current_len = len(event_data)
+            if current_len < self.payload_size_target:
+                padding_len = self.payload_size_target - current_len
+                # Add padding as XML comment or trailing bytes
+                # Trailing bytes is safer/easier for simple sizing
+                event_data += b' ' * padding_len
+        
         if getattr(self, 'encrypt', False):
              event_data = b'\xAA' * len(event_data)
         
-        # Batching Optimization: Repeat 10 times to reduce syscalls
-        # Batching Optimization: Disabled for stability verification
-        self.batch_size = 10
+        # Batching Optimization: Controlled via batch_size (set to 1 for experiment consistency)
+        self.batch_size = 1
         return event_data * self.batch_size
         
     def generate_packet(self):
         try:
+            # Generate fresh data for every packet (dynamic timestamps)
+            data = self._create_packet_data()
             if self.udp:
-                self.sock.sendto(self.pregenerated_data, (self.target_ip, self.target_port))
+                self.sock.sendto(data, (self.target_ip, self.target_port))
             else:
-                self.sock.sendall(self.pregenerated_data)
+                self.sock.sendall(data)
             self.stats['sent_packets'] += self.batch_size
-            self.stats['bytes_sent'] += len(self.pregenerated_data)
+            self.stats['bytes_sent'] += len(data)
             
             # Log sample of sent data
             if self.stats['sent_packets'] <= self.batch_size * 2: # Print only first couple of batches
@@ -468,6 +480,7 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, default=8087, help="Target Port (default 8087)")
     
     parser.add_argument("--udp", action="store_true", help="Use UDP for CoT")
+    parser.add_argument("--payload_size", type=int, default=0, help="Target payload size (padding)")
     
     args = parser.parse_args()
 
@@ -482,7 +495,7 @@ if __name__ == "__main__":
             threads = []
             if args.mode == "cot" or args.mode == "mixed":
                 # CoT Stream
-                cot = CoTStream(args.target_ip, args.port, args.duration, rate=args.rate, encrypt=args.encrypt, dscp=args.dscp, udp=args.udp)
+                cot = CoTStream(args.target_ip, args.port, args.duration, rate=args.rate, encrypt=args.encrypt, dscp=args.dscp, udp=args.udp, payload_size=args.payload_size)
                 threads.append(cot)
                 if args.mode == "mixed":
                     threads.append(VideoStream(args.target_ip, 5000, args.duration))
