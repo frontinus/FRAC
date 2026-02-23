@@ -16,6 +16,7 @@ import json
 import re
 import threading
 import zlib
+import time
 
 # XML reconstruction template
 COT_TEMPLATE = """<?xml version="1.0" standalone="yes"?>
@@ -127,6 +128,7 @@ def process_data(data, addr):
     addr_key = addr  # (ip, port)
     decoded = b""
     
+    print(f"[Sink] OK {time.time():.3f} {len(decoded)}", flush=True)
     if pkt_type == TYPE_SYNC:
         # Full packet — store as baseline for both modes
         delta_history[addr_key] = payload

@@ -1,0 +1,766 @@
+Listening on UDP 8087...Listening on TCP 8087...
+
+[Sink] OK 1771473013.629 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.662 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.696 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.731 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.765 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.796 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.831 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.864 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.897 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.932 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473013.964 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.003 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.033 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.066 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.099 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.133 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.168 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.201 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.235 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.268 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.301 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.335 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.368 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.403 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.438 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.470 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.504 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.537 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.571 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.604 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.639 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.672 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.706 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.739 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.773 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.808 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.840 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.874 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.907 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.942 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473014.975 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.008 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.044 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.082 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.126 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.144 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.179 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.210 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.245 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.278 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.312 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.346 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.380 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.413 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.446 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.480 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.514 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.548 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.581 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.615 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.648 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.682 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.716 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.750 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.784 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.817 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.854 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.887 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.918 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.953 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473015.985 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.019 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.053 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.086 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.122 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.155 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.189 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.221 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.255 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.290 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.323 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.356 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.389 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.424 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.456 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.490 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.524 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.557 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.592 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.625 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.659 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.693 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.726 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.760 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.794 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.827 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.862 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.895 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.928 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.962 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473016.996 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.029 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.063 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.097 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.131 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.164 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.199 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.232 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.267 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.300 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.333 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.372 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.400 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.433 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.467 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.501 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.535 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.568 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.602 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.636 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.669 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.703 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.736 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.770 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.805 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.841 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.872 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.905 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.939 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473017.973 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.007 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.041 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.073 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.109 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.141 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.174 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.210 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.242 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.276 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.309 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.344 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.377 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.412 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.446 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.477 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.511 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.546 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.579 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.612 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.646 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.681 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.713 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.748 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.781 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.814 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.849 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.883 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.917 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.949 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473018.984 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.016 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.051 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.085 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.120 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.154 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.188 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.221 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.256 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.291 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.323 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.359 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.390 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.424 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.457 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.491 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.526 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.560 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.594 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.627 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.659 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.695 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.727 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.761 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.794 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.828 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.861 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.895 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.929 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.963 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473019.996 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.030 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.064 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.097 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.135 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.166 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.198 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.232 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.265 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.300 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.333 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.367 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.400 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.434 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.468 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.502 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.535 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.568 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.602 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.636 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.671 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.703 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.737 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.770 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.806 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.838 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.871 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.905 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.939 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473020.972 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.008 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.040 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.076 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.107 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.143 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.174 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.208 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.244 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.277 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.310 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.343 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.377 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.411 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.446 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.478 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.513 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.546 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.580 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.612 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.646 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.680 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.714 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.747 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.782 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.815 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.850 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.883 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.917 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.950 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473021.983 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.017 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.053 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.084 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.118 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.152 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.185 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.220 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.252 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.287 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.320 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.353 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.387 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.423 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.455 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.489 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.522 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.556 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.590 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.623 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.658 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.691 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.725 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.759 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.793 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.825 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.859 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.893 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.927 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.960 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473022.994 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.027 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.061 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.096 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.128 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.164 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.196 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.229 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.263 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.296 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.331 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.364 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.399 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.432 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.466 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.499 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.532 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.567 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.600 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.638 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.667 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.701 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.734 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.771 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.802 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.837 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.870 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.904 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.936 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473023.971 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.005 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.037 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.072 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.105 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.140 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.172 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.208 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.240 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.275 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.308 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.341 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.377 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.408 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.442 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.476 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.510 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.544 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.577 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.611 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.644 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.677 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.712 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.745 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.778 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.814 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.846 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.880 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.913 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.948 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473024.980 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.014 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.048 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.082 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.115 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.149 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.183 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.216 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.251 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.284 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.318 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.351 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.385 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.418 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.453 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.488 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.520 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.555 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.588 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.622 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.654 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.688 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.723 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.757 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.789 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.826 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.857 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.891 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.925 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.957 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473025.991 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.025 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.059 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.092 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.126 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.161 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.193 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.227 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.261 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.294 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.328 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.362 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.396 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.431 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)
+[Sink] OK 1771473026.462 0
+[Sink] Auto-Sync from Raw XML: b'<?xml version="1.0" '... (800B)

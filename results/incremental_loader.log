@@ -1,0 +1,1309 @@
+libbpf: Kernel error message: Cannot find specified filter chain
+Attached XDP (Sojourn Ingress) to veth1-mb
+Attached XDP (Peer Ingress) to veth2-mb
+Configured XDP Redirect to Interface Index 830
+Configured XDP Redirect for Delta to Interface Index 833
+Successfully attached! Press Ctrl+C to stop.
+Read trace_pipe to see logs: cat /sys/kernel/debug/tracing/trace_pipe
+Showing Performance Metrics (Ctrl+C to stop):
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 0 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 0          | 0          | 0          | 0         
+End-to-End Sojourn   | 0          | 0          | 0          | 0         
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 0 bytes / 500,000 bytes
+Usage: [                                                  ] 0%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 0 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 0          | 0          | 0          | 0         
+End-to-End Sojourn   | 0          | 0          | 0          | 0         
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 0 bytes / 500,000 bytes
+Usage: [                                                  ] 0%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 0 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 0          | 0          | 0          | 0         
+End-to-End Sojourn   | 0          | 0          | 0          | 0         
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 0 bytes / 500,000 bytes
+Usage: [                                                  ] 0%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 0 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 0          | 0          | 0          | 0         
+End-to-End Sojourn   | 0          | 0          | 0          | 0         
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 0 bytes / 500,000 bytes
+Usage: [                                                  ] 0%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 11400 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 44         | 0          | 0          | 0         
+End-to-End Sojourn   | 44         | 4749       | 6983       | 10839     
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 11400 bytes / 500,000 bytes
+Usage: [#                                                 ] 2%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 33900 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 132        | 0          | 0          | 0         
+End-to-End Sojourn   | 132        | 4749       | 7166       | 36726     
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 33900 bytes / 500,000 bytes
+Usage: [###                                               ] 6%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 54518 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 217        | 0          | 0          | 0         
+End-to-End Sojourn   | 217        | 4749       | 7042       | 36726     
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 54518 bytes / 500,000 bytes
+Usage: [#####                                             ] 10%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 74592 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 302        | 0          | 0          | 0         
+End-to-End Sojourn   | 302        | 4749       | 6980       | 36726     
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 74592 bytes / 500,000 bytes
+Usage: [#######                                           ] 14%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 97551 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 390        | 0          | 0          | 0         
+End-to-End Sojourn   | 390        | 4668       | 6968       | 36726     
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 97551 bytes / 500,000 bytes
+Usage: [#########                                         ] 19%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 118665 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 478        | 0          | 0          | 0         
+End-to-End Sojourn   | 478        | 4668       | 6924       | 36726     
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 118665 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 138769 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 565        | 0          | 0          | 0         
+End-to-End Sojourn   | 565        | 4668       | 7671       | 382674    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 138769 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 147186 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 649        | 0          | 0          | 0         
+End-to-End Sojourn   | 649        | 4668       | 7572       | 382674    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 147186 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 132999 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 736        | 0          | 0          | 0         
+End-to-End Sojourn   | 736        | 4668       | 7681       | 382674    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 132999 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 122323 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 823        | 0          | 0          | 0         
+End-to-End Sojourn   | 823        | 4428       | 7572       | 382674    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 122323 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 142379 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 910        | 0          | 0          | 0         
+End-to-End Sojourn   | 910        | 4428       | 7461       | 382674    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 142379 bytes / 500,000 bytes
+Usage: [##############                                    ] 28%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 141459 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 996        | 0          | 0          | 0         
+End-to-End Sojourn   | 996        | 4428       | 8203       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 141459 bytes / 500,000 bytes
+Usage: [##############                                    ] 28%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 127933 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 1083       | 0          | 0          | 0         
+End-to-End Sojourn   | 1083       | 4428       | 8201       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 127933 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 126333 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1159       | 0          | 0          | 0         
+End-to-End Sojourn   | 1159       | 4428       | 8442       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 126333 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 149133 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1249       | 0          | 0          | 0         
+End-to-End Sojourn   | 1249       | 4428       | 8292       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 149133 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 136043 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 1334       | 0          | 0          | 0         
+End-to-End Sojourn   | 1334       | 4428       | 8142       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 136043 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 122796 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 1422       | 0          | 0          | 0         
+End-to-End Sojourn   | 1422       | 4428       | 8060       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 122796 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 137756 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1510       | 0          | 0          | 0         
+End-to-End Sojourn   | 1510       | 4428       | 7987       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 137756 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 132130 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1576       | 0          | 0          | 0         
+End-to-End Sojourn   | 1576       | 4428       | 8114       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 132130 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 129682 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1635       | 0          | 0          | 0         
+End-to-End Sojourn   | 1635       | 4428       | 8199       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 129682 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 149306 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1721       | 0          | 0          | 0         
+End-to-End Sojourn   | 1721       | 4428       | 8160       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 149306 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 138066 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 1809       | 0          | 0          | 0         
+End-to-End Sojourn   | 1809       | 4428       | 8077       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 138066 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 125089 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 1898       | 0          | 0          | 0         
+End-to-End Sojourn   | 1898       | 4428       | 8008       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 125089 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 132560 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 1984       | 0          | 0          | 0         
+End-to-End Sojourn   | 1984       | 4318       | 8041       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 132560 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 148999 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 2071       | 0          | 0          | 0         
+End-to-End Sojourn   | 2071       | 4318       | 7979       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 148999 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 133406 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 2154       | 0          | 0          | 0         
+End-to-End Sojourn   | 2154       | 4318       | 7922       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 133406 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 97900 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2188       | 0          | 0          | 0         
+End-to-End Sojourn   | 2188       | 4318       | 7903       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 97900 bytes / 500,000 bytes
+Usage: [#########                                         ] 19%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 95525 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2208       | 0          | 0          | 0         
+End-to-End Sojourn   | 2208       | 4318       | 7907       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 95525 bytes / 500,000 bytes
+Usage: [#########                                         ] 19%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 77281 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 2288       | 0          | 0          | 0         
+End-to-End Sojourn   | 2288       | 4318       | 8037       | 824773    
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 77281 bytes / 500,000 bytes
+Usage: [#######                                           ] 15%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 98527 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 2374       | 0          | 0          | 0         
+End-to-End Sojourn   | 2374       | 4318       | 8049       | 824773    
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 98527 bytes / 500,000 bytes
+Usage: [#########                                         ] 19%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 116371 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2458       | 0          | 0          | 0         
+End-to-End Sojourn   | 2458       | 4318       | 8108       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 116371 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 126879 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2533       | 0          | 0          | 0         
+End-to-End Sojourn   | 2533       | 4318       | 8312       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 126879 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 144331 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2617       | 0          | 0          | 0         
+End-to-End Sojourn   | 2617       | 4318       | 8422       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 144331 bytes / 500,000 bytes
+Usage: [##############                                    ] 28%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 137124 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 2695       | 0          | 0          | 0         
+End-to-End Sojourn   | 2695       | 4318       | 8410       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 137124 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 120916 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2773       | 0          | 0          | 0         
+End-to-End Sojourn   | 2773       | 4318       | 8493       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 120916 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 134671 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2850       | 0          | 0          | 0         
+End-to-End Sojourn   | 2850       | 4318       | 8696       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 134671 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 115740 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2892       | 0          | 0          | 0         
+End-to-End Sojourn   | 2892       | 4318       | 8711       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 115740 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 117247 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 2954       | 0          | 0          | 0         
+End-to-End Sojourn   | 2954       | 4318       | 8688       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 117247 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 73957 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 2977       | 0          | 0          | 0         
+End-to-End Sojourn   | 2977       | 4318       | 8746       | 824773    
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 73957 bytes / 500,000 bytes
+Usage: [#######                                           ] 14%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 81024 bytes
+Local State: [1;36mNORMAL[0m (Sev: 0)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mNORMAL[0m
+========================
+
+Compression Time     | 3046       | 0          | 0          | 0         
+End-to-End Sojourn   | 3046       | 4318       | 8954       | 824773    
+
+=== Congestion Status ===
+State: NORMAL
+Current Queue: 81024 bytes / 500,000 bytes
+Usage: [########                                          ] 16%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 102169 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3132       | 0          | 0          | 0         
+End-to-End Sojourn   | 3132       | 4318       | 8936       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 102169 bytes / 500,000 bytes
+Usage: [##########                                        ] 20%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 121703 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3218       | 0          | 0          | 0         
+End-to-End Sojourn   | 3218       | 4318       | 8943       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 121703 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 129561 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3291       | 0          | 0          | 0         
+End-to-End Sojourn   | 3291       | 4318       | 8977       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 129561 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 145157 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3372       | 0          | 0          | 0         
+End-to-End Sojourn   | 3372       | 4318       | 8984       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 145157 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 121357 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3405       | 0          | 0          | 0         
+End-to-End Sojourn   | 3405       | 4318       | 9040       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 121357 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 116164 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3461       | 0          | 0          | 0         
+End-to-End Sojourn   | 3461       | 4318       | 9039       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 116164 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 121915 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3530       | 0          | 0          | 0         
+End-to-End Sojourn   | 3530       | 4318       | 9277       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 121915 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 133660 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3607       | 0          | 0          | 0         
+End-to-End Sojourn   | 3607       | 4318       | 9304       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 133660 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 119670 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3671       | 0          | 0          | 0         
+End-to-End Sojourn   | 3671       | 4318       | 9277       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 119670 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 100205 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3709       | 0          | 0          | 0         
+End-to-End Sojourn   | 3709       | 4318       | 9261       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 100205 bytes / 500,000 bytes
+Usage: [##########                                        ] 20%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 116240 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3791       | 0          | 0          | 0         
+End-to-End Sojourn   | 3791       | 4318       | 9312       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 116240 bytes / 500,000 bytes
+Usage: [###########                                       ] 23%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 129911 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3870       | 0          | 0          | 0         
+End-to-End Sojourn   | 3870       | 4318       | 9345       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 129911 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 145871 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 3952       | 0          | 0          | 0         
+End-to-End Sojourn   | 3952       | 4318       | 9322       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 145871 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 139592 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 4036       | 0          | 0          | 0         
+End-to-End Sojourn   | 4036       | 4318       | 9293       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 139592 bytes / 500,000 bytes
+Usage: [#############                                     ] 27%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 123864 bytes
+Local State: [1;36mDELTA[0m (Sev: 2)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mDELTA[0m
+========================
+
+Compression Time     | 4119       | 0          | 0          | 0         
+End-to-End Sojourn   | 4119       | 4318       | 9348       | 824773    
+
+=== Congestion Status ===
+State: DELTA ENCODING
+Current Queue: 123864 bytes / 500,000 bytes
+Usage: [############                                      ] 24%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 131717 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 4198       | 0          | 0          | 0         
+End-to-End Sojourn   | 4198       | 4318       | 9323       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 131717 bytes / 500,000 bytes
+Usage: [#############                                     ] 26%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 147453 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | libbpf: Kernel error message: Cannot find specified filter chain
+4280       | 0          | 0          | 0         
+End-to-End Sojourn   | 4280       | 4318       | 9335       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 147453 bytes / 500,000 bytes
+Usage: [##############                                    ] 29%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 127829 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 4300       | 0          | 0          | 0         
+End-to-End Sojourn   | 4300       | 4318       | 9374       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 127829 bytes / 500,000 bytes
+Usage: [############                                      ] 25%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 108607 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 4353       | 0          | 0          | 0         
+End-to-End Sojourn   | 4353       | 4318       | 9375       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 108607 bytes / 500,000 bytes
+Usage: [##########                                        ] 21%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 93370 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 4367       | 0          | 0          | 0         
+End-to-End Sojourn   | 4367       | 4318       | 9370       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 93370 bytes / 500,000 bytes
+Usage: [#########                                         ] 18%
+
+(Generating traffic in H1 will update these values)
+[H[J=== Middlebox Performance Metrics ===
+Metric               | Count      | Min (ns)   | Avg (ns)   | Max (ns)  
+---------------------|------------|------------|------------|------------
+
+=== CONGESTION STATE ===
+Queue Depth: 93370 bytes
+Local State: [1;36mCOMPRESS[0m (Sev: 1)
+Remote State: [1;35mNORMAL[0m (Sev: 0)
+OPERATING STATE: [1;32mCOMPRESS[0m
+========================
+
+Compression Time     | 4367       | 0          | 0          | 0         
+End-to-End Sojourn   | 4367       | 4318       | 9370       | 824773    
+
+=== Congestion Status ===
+State: COMPRESSING
+Current Queue: 93370 bytes / 500,000 bytes
+Usage: [#########                                         ] 18%
+
+(Generating traffic in H1 will update these values)
