@@ -1,10 +1,3 @@
-#!/bin/bash
-# run_clean_comparative.sh — Fixed sweep
-# Fixes applied:
-#   - HC phase starts decompressor on H2
-#   - State forcing uses force_state.py (read-modify-write, no field clobber)
-#   - Agent uses real delta encoding (SYNC + XOR + zlib)
-
 nuke() {
     echo "  [Nuke] tearing down namespaces..."
     for ns in H1 H2 MiddleBox; do
@@ -83,11 +76,14 @@ run_phase() {
     ip netns exec MiddleBox tc qdisc add dev veth2-mb root netem \
        rate 200kbit delay 50ms 10ms loss 2%
 
+    # Clear old telemetry before starting
+    rm -f congestion_log.csv
+
     # Start Sink (CPU 3)
     taskset -c 3 ip netns exec H2 python3 -u sink.py --port 8087 > /tmp/sink_${PHASE_NAME}.log 2>&1 &
     SINK_PID=$!
 
-    # Start Monitor (CPU 0) — monitors H2's rx (veth2) to avoid double-counting
+    # Start Monitor (CPU 0)
     taskset -c 0 ip netns exec MiddleBox python3 monitor_general.py veth2-mb $LOG_FILE &
     MON_PID=$!
 
@@ -99,31 +95,28 @@ run_phase() {
         AGENT_PID=$!
     fi
 
-    # Start Loader (MiddleBox) for non-Baseline phases
-    LOADER_PID=""
-    if [ "$PHASE_NAME" != "Baseline" ]; then
-        echo "  > Starting Loader & Forcing State $STATE_VAL..."
-        taskset -c 0 ip netns exec MiddleBox ./loader veth1-mb veth2-mb > /tmp/loader_${PHASE_NAME}.log 2>&1 &
-        LOADER_PID=$!
-        sleep 2
+    # ALWAYS start the Loader (even in Baseline) to collect eBPF Sojourn Telemetry
+    echo "  > Starting Loader & Forcing State $STATE_VAL..."
+    taskset -c 0 ip netns exec MiddleBox ./loader veth1-mb veth2-mb > /tmp/loader_${PHASE_NAME}.log 2>&1 &
+    LOADER_PID=$!
+    sleep 2
 
-        # Start decompressor on H2 (needed for HC compressed frames)
-        echo "  > Starting Decompressor on H2..."
-        ip netns exec H2 ./loader --decompress veth2 > /tmp/decomp_${PHASE_NAME}.log 2>&1 &
-        DECOMP_PID=$!
-        sleep 1
+    # Start decompressor on H2
+    echo "  > Starting Decompressor on H2..."
+    ip netns exec H2 ./loader --decompress veth2 > /tmp/decomp_${PHASE_NAME}.log 2>&1 &
+    DECOMP_PID=$!
+    sleep 1
 
-        # Periodic state forcing (safe read-modify-write via force_state.py)
-        (
-            while kill -0 $SINK_PID 2>/dev/null; do
-                ip netns exec MiddleBox python3 force_state.py $STATE_VAL &
-                FORCE_PID=$!
-                sleep 2.0
-                kill $FORCE_PID 2>/dev/null
-            done
-        ) &
-        FORCE_LOOP_PID=$!
-    fi
+    # Periodic state forcing
+    (
+        while kill -0 $SINK_PID 2>/dev/null; do
+            ip netns exec MiddleBox python3 force_state.py $STATE_VAL &
+            FORCE_PID=$!
+            sleep 2.0
+            kill $FORCE_PID 2>/dev/null
+        done
+    ) &
+    FORCE_LOOP_PID=$!
 
     # Traffic (CPU 1)
     echo "  > Sending 100pps traffic (800B payload)..."
@@ -134,6 +127,9 @@ run_phase() {
     sleep 3
     kill $MON_PID $SINK_PID $AGENT_PID $LOADER_PID $DECOMP_PID $FORCE_LOOP_PID 2>/dev/null
     wait $MON_PID $SINK_PID $AGENT_PID 2>/dev/null
+
+    # Preserve the specific sojourn telemetry for this phase
+    mv congestion_log.csv ${PHASE_NAME}_sojourn.csv 2>/dev/null
 
     # Record Sink-side metrics
     SINK_SYNC=$(grep -c "Rx SYNC\|Auto-Sync" /tmp/sink_${PHASE_NAME}.log 2>/dev/null || echo 0)

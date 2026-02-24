@@ -14,12 +14,15 @@
 #include <sys/ioctl.h>
 #include <time.h>
 #include "xdp_prog.skel.h"
+#include <linux/ipv6.h>
 
 /* Structure definition (Must match xdp_prog.c) */
 struct flow_context {
+    __u8 is_ipv6;
     struct iphdr ip;
     struct udphdr udp;
     struct tcphdr tcp;
+    struct ipv6hdr ipv6;
 };
 
 /* Stats Struct */
@@ -34,6 +37,9 @@ struct queue_state {
     __u64 last_update_ns;
     __u64 current_bytes;
     __u32 state;
+    __u32 padding;           /* Explicit alignment padding */
+    __u64 avg_sojourn_ns;    /* EWMA of latency */
+    __u64 link_capacity_bps; /* Physical drain rate estimation */
 };
 
 static volatile bool exiting = false;
@@ -324,6 +330,7 @@ usage:
     struct flow_context ctx;
     memset(&ctx, 0, sizeof(ctx));
     
+    ctx.is_ipv6 = 0;
     ctx.ip.version = 4;
     ctx.ip.ihl = 5;
     ctx.ip.tos = 0;
@@ -341,6 +348,7 @@ usage:
     ctx.udp.len = 0; // Dynamic
     ctx.udp.check = 0;
 
+    
     int map_fd = bpf_map__fd(skel->maps.context_map);
     __u8 flow_id = 1;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx, sizeof(ctx), BPF_ANY);
@@ -348,6 +356,7 @@ usage:
     /* Populate Context for TCP (Flow ID 2) */
     struct flow_context ctx_tcp;
     memset(&ctx_tcp, 0, sizeof(ctx_tcp));
+    ctx_tcp.is_ipv6 = 0;
     ctx_tcp.ip = ctx.ip; /* Reuse IP template */
     ctx_tcp.ip.protocol = IPPROTO_TCP;
     
@@ -363,7 +372,47 @@ usage:
     flow_id = 2;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_tcp, sizeof(ctx_tcp), BPF_ANY);
 
+    /* ==========================================
+       IPv6 Templates (Flow IDs 3 & 4)
+       ========================================== */
+    /* Flow ID 3: IPv6 UDP */
+    struct flow_context ctx_ipv6;
+    memset(&ctx_ipv6, 0, sizeof(ctx_ipv6));
+    ctx_ipv6.is_ipv6 = 1;
 
+    ctx_ipv6.ipv6.version = 6;
+    ctx_ipv6.ipv6.priority = 0;
+    memset(ctx_ipv6.ipv6.flow_lbl, 0, sizeof(ctx_ipv6.ipv6.flow_lbl));
+    ctx_ipv6.ipv6.payload_len = 0;
+    ctx_ipv6.ipv6.nexthdr = IPPROTO_UDP;
+    ctx_ipv6.ipv6.hop_limit = 64;
+    
+    /* Using standard ULA fd00:: prefix for PoC testing */
+    inet_pton(AF_INET6, "fd00::1", &ctx_ipv6.ipv6.saddr);
+    inet_pton(AF_INET6, "fd00::2", &ctx_ipv6.ipv6.daddr);
+    
+    ctx_ipv6.udp.source = 0;
+    ctx_ipv6.udp.dest = htons(8087);
+    ctx_ipv6.udp.len = 0;
+    ctx_ipv6.udp.check = 0;
+
+    flow_id = 3;
+    bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_ipv6, sizeof(ctx_ipv6), BPF_ANY);
+
+    /* Flow ID 4: IPv6 TCP */
+    struct flow_context ctx_ipv6_tcp;
+    memset(&ctx_ipv6_tcp, 0, sizeof(ctx_ipv6_tcp));
+    ctx_ipv6_tcp.is_ipv6 = 1;
+    ctx_ipv6_tcp.ipv6 = ctx_ipv6.ipv6; /* Reuse IPv6 template */
+    ctx_ipv6_tcp.ipv6.nexthdr = IPPROTO_TCP;
+    
+    ctx_ipv6_tcp.tcp.source = 0;
+    ctx_ipv6_tcp.tcp.dest = htons(8087);
+    ctx_ipv6_tcp.tcp.seq = 0;
+    ctx_ipv6_tcp.tcp.ack_seq = 0;
+
+    flow_id = 4;
+    bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_ipv6_tcp, sizeof(ctx_ipv6_tcp), BPF_ANY);
     if (mode == 0) {
         /* MiddleBox Mode */
         int ingress_ifindex = if_nametoindex(iface_ingress);
@@ -574,7 +623,9 @@ usage:
                  if (q_val.state == 4) state_str = "DROPPING";
                  
                  printf("State: %s\n", state_str);
-                 printf("Current Queue: %llu bytes / 500,000 bytes\n", q_val.current_bytes);
+                 double lat_ms = (double)q_val.avg_sojourn_ns / 1000000.0;
+                 printf("Current Avg Sojourn: %.2f ms\n", lat_ms);
+                 printf("Estimated Backlog: %llu bytes\n", q_val.current_bytes);
                  
                  /* Visual Bar */
                  int percent = (q_val.current_bytes * 100) / 500000;
@@ -590,7 +641,7 @@ usage:
                  /* CSV Logging */
                  FILE *log_fp = fopen("congestion_log.csv", "a");
                  if (log_fp) {
-                     fprintf(log_fp, "%llu,%llu,%d,%u\n", (unsigned long long)time(NULL), q_val.current_bytes, percent, q_val.state);
+                     fprintf(log_fp, "%llu,%.2f,%llu,%u\n", (unsigned long long)time(NULL), lat_ms, q_val.current_bytes, q_val.state);
                      fclose(log_fp);
                  }
             }
