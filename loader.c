@@ -53,42 +53,33 @@ static void sig_handler(int sig)
 #include <linux/if_packet.h>
 #include <net/ethernet.h>
 #include <pthread.h>
-// #include <openssl/sha.h>  // Removed dependency 
 
-/* Simplified SHA256 for Key generation if OpenSSL not avail, 
-   but let's assumes we just use a simple hash for PoC to avoid deps issues if possible.
-   Actually, let's use a simple LCG for "Hash" to keep it self-contained.
-*/
 unsigned int simple_hash(unsigned int prev) {
     return (prev * 1103515245 + 12345) & 0x7FFFFFFF;
 }
 
 /* Global Key State */
-char global_egress_iface[IFNAMSIZ] = "lo"; // Global egress interface for raw socket
-
+char global_egress_iface[IFNAMSIZ] = "lo"; 
 volatile unsigned int current_key = 0xDEADBEEF;
 pthread_mutex_t key_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* Key Manager Thread */
 void *key_manager(void *arg) {
     while (!exiting) {
-        sleep(10); // Interval T = 10s
-        
+        sleep(10); 
         pthread_mutex_lock(&key_lock);
         current_key = simple_hash(current_key);
-        // printf("[KeyMgr] Rotated Key: 0x%08X\n", current_key);
         pthread_mutex_unlock(&key_lock);
     }
     return NULL;
 }
 
 /* Delta Worker Thread */
-/* Listen on veth-delta (Simulated "Slow Path") */
 void *delta_worker(void *arg) {
     int sock;
     struct sockaddr_ll sll;
     unsigned char buffer[2048];
-    char *iface = "veth-delta-peer"; // Peer of the redirect target
+    char *iface = "veth-delta-peer"; 
     
     sock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (sock < 0) {
@@ -113,11 +104,6 @@ void *delta_worker(void *arg) {
         return NULL;
     }
     
-    /* Output Socket (Raw Socket on Egress) */
-    /* We need to know egress interface name. It's safe to assume a global or pass it in. 
-       For now, let's just open a socket and stick to 'veth2-mb' logic or similar. 
-       Actually, 'loader' knows egress iface. Let's make it global.
-    */
     extern char global_egress_iface[IFNAMSIZ];
     
     int out_sock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
@@ -130,8 +116,6 @@ void *delta_worker(void *arg) {
     struct ifreq ifr_out;
     strncpy(ifr_out.ifr_name, global_egress_iface, IFNAMSIZ);
     if (ioctl(out_sock, SIOCGIFINDEX, &ifr_out) < 0) {
-        // perror("Output IOCTL error (using lo fallback)");
-        // Fallback to lo? No, must fail.
     }
     
     memset(&sll_out, 0, sizeof(sll_out));
@@ -139,12 +123,8 @@ void *delta_worker(void *arg) {
     sll_out.sll_ifindex = ifr_out.ifr_ifindex;
     sll_out.sll_protocol = htons(ETH_P_ALL);
 
-    
     printf("[DeltaWorker] Listening on %s...\n", iface);
     
-    /* Flow History for Delta */
-    /* Key: SrcPort (Simple), Value: Last Payload Hash/Data */
-    /* PoC: Just 1 flow supported */
     char last_payload[1500];
     int last_len = 0;
     
@@ -152,16 +132,12 @@ void *delta_worker(void *arg) {
         int n = recvfrom(sock, buffer, sizeof(buffer), 0, NULL, NULL);
         if (n <= 0) continue;
         
-        /* 1. Parse Packet */
         struct ethhdr *eth = (struct ethhdr *)buffer;
         if (ntohs(eth->h_proto) != ETH_P_IP) continue;
         
         struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
         int hdr_len = ip->ihl * 4;
         
-        /* 2. Decrypt Payload (XOR) */
-        /* Assuming TCP/UDP payload starts after Transport Header */
-        /* Let's find payload offset */
         int payload_offset = sizeof(struct ethhdr) + hdr_len;
         if (ip->protocol == IPPROTO_TCP) {
              struct tcphdr *tcp = (struct tcphdr *)(buffer + payload_offset);
@@ -172,7 +148,7 @@ void *delta_worker(void *arg) {
             continue; 
         }
         
-        if (n <= payload_offset) continue; // No payload
+        if (n <= payload_offset) continue; 
         
         unsigned char *payload = buffer + payload_offset;
         int payload_len = n - payload_offset;
@@ -181,59 +157,25 @@ void *delta_worker(void *arg) {
         unsigned int key = current_key;
         pthread_mutex_unlock(&key_lock);
         
-        /* XOR Decrypt */
-        /* Note: In a real world, we'd act on the decrypted buffer.
-           Here we just modify it in place. */
         for (int i=0; i<payload_len; i++) {
             payload[i] ^= (key & 0xFF); 
         }
         
-        /* 3. Compute Delta / Compress */
-        /* Logic: If payload matches last seen 'significant' parts, send only diff.
-           For CoT (XML), we could strip the header/simpler tags.
-           Simplification: If payload starts with specific bytes, truncate it.
-        */
+        int new_len = payload_len / 2; 
+        if (new_len < 10) new_len = payload_len; 
         
-        /* Let's simulate: If we successfully "decrypted" (which we always do),
-           and it looks like CoT (we assume it is based on port), 
-           we "compress" it by stripping 50% of bytes to simulate Delta.
-           
-           Real Delta: 
-           Diff = Payload XOR LastPayload? 
-           Or Diff = VCDIFF?
-           
-           Let's do:
-           NewPayload = DeltaMarker + (Payload - SharedDictionary)
-        */
-        
-        int new_len = payload_len / 2; // Simulate 50% compression
-        if (new_len < 10) new_len = payload_len; // Don't over compress
-        
-        /* 4. Encrypt (XOR) again */
         for (int i=0; i<new_len; i++) {
             payload[i] ^= (key & 0xFF);
         }
         
-        /* Fix IP Length */
-        /* packet_offset was likely intended to be hdr_len + sizeof(eth) but we tracked payload_offset */
-        /* original packet total len = ntohs(ip->tot_len) */
-        /* new packet total len = original - (payload_len - new_len) */
-        
         int diff = payload_len - new_len;
         ip->tot_len = htons(ntohs(ip->tot_len) - diff);
-        ip->check = 0; // Recalc checksum? Let kernel handle or ignore for PoC
+        ip->check = 0; 
         
-        /* SIGNALING: Set EtherType to 0x88B6 (DELTA) */
-        // struct ethhdr *eth = (struct ethhdr *)buffer; // Already defined above
         eth->h_proto = htons(0x88B6);
         
-        /* 5. Forward (Re-inject) */
-        /* Send out socket */
         if (sendto(out_sock, buffer, n - diff, 0, (struct sockaddr *)&sll_out, sizeof(sll_out)) < 0) {
-             // perror("Send Error");
         }
-        
-        // printf("[DeltaWorker] Processed Packet: Len %d -> %d\n", payload_len, new_len);
     }
     
     close(sock);
@@ -241,18 +183,12 @@ void *delta_worker(void *arg) {
     return NULL;
 }
 
-
-/* Structure definition (Must match xdp_prog.c) */
-
-char global_egress_iface[IFNAMSIZ];
-
 int main(int argc, char **argv)
 {
     struct xdp_prog *skel;
     int err;
 
-    /* Parse Arguments */
-    int mode = 0; // 0: MiddleBox (Compressor + Ingress), 1: H2 (Decompressor)
+    int mode = 0; 
     const char *iface_ingress = NULL;
     const char *iface_egress = NULL;
 
@@ -276,31 +212,23 @@ usage:
         strncpy(global_egress_iface, iface_egress, IFNAMSIZ);
     }
     
-    /* Start Threads if Mode 0 */
     if (mode == 0) {
         pthread_t tid_key;
         pthread_create(&tid_key, NULL, key_manager, NULL);
-        /* Delta worker disabled — using Python delta_agent.py instead */
-        // pthread_t tid_delta;
-        // pthread_create(&tid_delta, NULL, delta_worker, NULL);
     }
 
-    /* Open BPF application */
     skel = xdp_prog__open();
     if (!skel) {
         fprintf(stderr, "Failed to open BPF skeleton\n");
         return 1;
     }
 
-    /* Load & verify BPF programs */
     err = xdp_prog__load(skel);
     if (err) {
         fprintf(stderr, "Failed to load BPF skeleton: %d\n", err);
         goto cleanup;
     }
 
-     // TC Hook (Ingress for Co-operative Congestion Control & Redirection)
-    // We attach to veth1-mb (Ingress)
     struct bpf_tc_hook hook;
     struct bpf_tc_opts opts;
     memset(&hook, 0, sizeof(hook));
@@ -308,7 +236,6 @@ usage:
     hook.ifindex = if_nametoindex(argv[1]);
     hook.attach_point = BPF_TC_INGRESS;
     
-
     err = bpf_tc_hook_create(&hook);
     if (err && err != -EEXIST) {
         fprintf(stderr, "Failed to create TC hook: %d\n", err);
@@ -323,10 +250,8 @@ usage:
         fprintf(stderr, "Failed to attach TC: %d\n", err);
         goto cleanup;
     }
+    printf("Attached TC (Compression) to %s\n", argv[1]);
 
-
-    /* Populate Context Map (Static for PoC) */
-    /* Flow ID 1: Src 10.0.1.1, Dst 10.0.2.1, UDP, Dst Port 5000 */
     struct flow_context ctx;
     memset(&ctx, 0, sizeof(ctx));
     
@@ -334,48 +259,39 @@ usage:
     ctx.ip.version = 4;
     ctx.ip.ihl = 5;
     ctx.ip.tos = 0;
-    ctx.ip.tot_len = 0; // Dynamic
-    ctx.ip.id = 0; // Dynamic? SCHC usually relies on IP ID behavior
-    ctx.ip.frag_off = 0; // Assume no frag
+    ctx.ip.tot_len = 0; 
+    ctx.ip.id = 0; 
+    ctx.ip.frag_off = 0; 
     ctx.ip.ttl = 64;
     ctx.ip.protocol = IPPROTO_UDP;
-    ctx.ip.check = 0; // Recalculated by stack?
-    ctx.ip.saddr = inet_addr("10.0.1.1"); // Network Byte Order
+    ctx.ip.check = 0; 
+    ctx.ip.saddr = inet_addr("10.0.1.1"); 
     ctx.ip.daddr = inet_addr("10.0.2.1");
     
-    ctx.udp.source = 0; // Dynamic (saved in compressed header)
+    ctx.udp.source = 0; 
     ctx.udp.dest = htons(8087);
-    ctx.udp.len = 0; // Dynamic
+    ctx.udp.len = 0; 
     ctx.udp.check = 0;
 
-    
     int map_fd = bpf_map__fd(skel->maps.context_map);
     __u8 flow_id = 1;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx, sizeof(ctx), BPF_ANY);
 
-    /* Populate Context for TCP (Flow ID 2) */
     struct flow_context ctx_tcp;
     memset(&ctx_tcp, 0, sizeof(ctx_tcp));
     ctx_tcp.is_ipv6 = 0;
-    ctx_tcp.ip = ctx.ip; /* Reuse IP template */
+    ctx_tcp.ip = ctx.ip; 
     ctx_tcp.ip.protocol = IPPROTO_TCP;
     
-    /* TCP Template */
-    ctx_tcp.tcp.source = 0; // Dynamic
+    ctx_tcp.tcp.source = 0; 
     ctx_tcp.tcp.dest = htons(8087);
-    ctx_tcp.tcp.seq = 0; // Dynamic
-    ctx_tcp.tcp.ack_seq = 0; // Dynamic
-    ctx_tcp.tcp.doff = 0; // Dynamic? No, we restore to 5(20 bytes)
-    /* We don't really use the context for TCP other than IP and some static fields? */
-    /* Decompressor logic mainly uses it for IP header. */
+    ctx_tcp.tcp.seq = 0; 
+    ctx_tcp.tcp.ack_seq = 0; 
+    ctx_tcp.tcp.doff = 0; 
     
     flow_id = 2;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_tcp, sizeof(ctx_tcp), BPF_ANY);
 
-    /* ==========================================
-       IPv6 Templates (Flow IDs 3 & 4)
-       ========================================== */
-    /* Flow ID 3: IPv6 UDP */
     struct flow_context ctx_ipv6;
     memset(&ctx_ipv6, 0, sizeof(ctx_ipv6));
     ctx_ipv6.is_ipv6 = 1;
@@ -387,7 +303,6 @@ usage:
     ctx_ipv6.ipv6.nexthdr = IPPROTO_UDP;
     ctx_ipv6.ipv6.hop_limit = 64;
     
-    /* Using standard ULA fd00:: prefix for PoC testing */
     inet_pton(AF_INET6, "fd00::1", &ctx_ipv6.ipv6.saddr);
     inet_pton(AF_INET6, "fd00::2", &ctx_ipv6.ipv6.daddr);
     
@@ -399,11 +314,10 @@ usage:
     flow_id = 3;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_ipv6, sizeof(ctx_ipv6), BPF_ANY);
 
-    /* Flow ID 4: IPv6 TCP */
     struct flow_context ctx_ipv6_tcp;
     memset(&ctx_ipv6_tcp, 0, sizeof(ctx_ipv6_tcp));
     ctx_ipv6_tcp.is_ipv6 = 1;
-    ctx_ipv6_tcp.ipv6 = ctx_ipv6.ipv6; /* Reuse IPv6 template */
+    ctx_ipv6_tcp.ipv6 = ctx_ipv6.ipv6; 
     ctx_ipv6_tcp.ipv6.nexthdr = IPPROTO_TCP;
     
     ctx_ipv6_tcp.tcp.source = 0;
@@ -413,8 +327,8 @@ usage:
 
     flow_id = 4;
     bpf_map__update_elem(skel->maps.context_map, &flow_id, sizeof(flow_id), &ctx_ipv6_tcp, sizeof(ctx_ipv6_tcp), BPF_ANY);
+
     if (mode == 0) {
-        /* MiddleBox Mode */
         int ingress_ifindex = if_nametoindex(iface_ingress);
         int egress_ifindex = if_nametoindex(iface_egress);
         
@@ -423,10 +337,8 @@ usage:
             goto cleanup;
         }
 
-        /* Force Detach XDP first to avoid EBUSY */
         bpf_xdp_detach(ingress_ifindex, 0, NULL);
         
-        /* Attach XDP (Ingress) */
         struct bpf_link *link = bpf_program__attach_xdp(skel->progs.xdp_prog_main, ingress_ifindex);
         if (!link) {
             fprintf(stderr, "Failed to attach XDP program to %s in Native mode. Trying Generic/SKB mode.\n", iface_ingress);
@@ -434,49 +346,42 @@ usage:
              fprintf(stderr, "Error: %d\n", err);
             goto cleanup;
         }
-        skel->links.xdp_prog_main = link; // Persist link in skeleton to ensure it lives as long as skeleton
+        skel->links.xdp_prog_main = link; 
         printf("Attached XDP (Sojourn Ingress) to %s\n", iface_ingress);
 
-        /* Attach TC (Egress / Compressor) */
         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook, .ifindex = egress_ifindex, .attach_point = BPF_TC_EGRESS);
         DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1, .prog_fd = bpf_program__fd(skel->progs.tc_prog_main));
 
-        bpf_tc_hook_create(&tc_hook); // Create clsact (ignore error)
-        
-        struct bpf_tc_opts detach_opts = tc_opts;
-        detach_opts.prog_fd = 0; 
-        detach_opts.prog_id = 0;
-        detach_opts.flags = 0; 
-        
-        bpf_tc_detach(&tc_hook, &detach_opts); // Ignore error
-
-        /* Attach TC Program */
-        if (err) {
-            fprintf(stderr, "Failed to attach TC: %d\n", err);
+        err = bpf_tc_hook_create(&tc_hook);
+        if (err && err != -EEXIST) {
+            fprintf(stderr, "Failed to create TC egress hook: %d\n", err);
             goto cleanup;
         }
 
-        /* Attach XDP Peer Ingress (Cooperative Logic) to Egress Interface (veth2-mb) */
-        /* Note: veth2-mb is Egress for forwarding, but Ingress for H2->MB traffic */
-        bpf_xdp_detach(egress_ifindex, 0, NULL); // Detach any old XDP
+        err = bpf_tc_attach(&tc_hook, &tc_opts);
+        if (err) {
+            fprintf(stderr, "Failed to attach TC to egress: %d\n", err);
+            goto cleanup;
+        }
+        printf("Attached TC (Egress) to %s\n", iface_egress);
+
+        bpf_xdp_detach(egress_ifindex, 0, NULL); 
         struct bpf_link *peer_link = bpf_program__attach_xdp(skel->progs.xdp_peer_ingress, egress_ifindex);
         if (!peer_link) {
             fprintf(stderr, "Failed to attach XDP Peer Ingress to %s: %d\n", iface_egress, -errno);
-            // Try Generic Mode
             peer_link = bpf_program__attach_xdp(skel->progs.xdp_peer_ingress, egress_ifindex);
              if (!peer_link) {
                 fprintf(stderr, "Failed to attach Peer XDP in Generic mode either.\n");
              }
         }
         if (peer_link) {
-             skel->links.xdp_peer_ingress = peer_link; // Persist
+             skel->links.xdp_peer_ingress = peer_link; 
              printf("Attached XDP (Peer Ingress) to %s\n", iface_egress);
         }
 
-        /* Populate TX Port Map */
         int tx_port_fd = bpf_map__fd(skel->maps.tx_port);
         int key = 0;
-        int val = egress_ifindex; // Use H2 interface (veth2-mb) as egress
+        int val = egress_ifindex; 
         
         int ret = bpf_map_update_elem(tx_port_fd, &key, &val, BPF_ANY);
         if (ret) {
@@ -485,7 +390,6 @@ usage:
              printf("Configured XDP Redirect to Interface Index %d\n", val);
         }
         
-        /* Configure Delta Interface (Key 1) */
         int val_delta = if_nametoindex("veth-delta");
         if (val_delta > 0) {
             int key_delta = 1;
@@ -496,69 +400,71 @@ usage:
         }
         
     } else {
-        /* Decompressor Mode */
         int ifindex = if_nametoindex(iface_ingress);
          if (!ifindex) {
             fprintf(stderr, "Interface %s not found\n", iface_ingress);
             goto cleanup;
         }
         
-        /* Force Detach XDP first to avoid EBUSY */
         bpf_xdp_detach(ifindex, 0, NULL);
 
-        /* Attach XDP (Decompressor) */
         struct bpf_link *link = bpf_program__attach_xdp(skel->progs.xdp_decompress_main, ifindex);
         if (!link) {
             fprintf(stderr, "Failed to attach XDP Decompressor to %s: %d\n", iface_ingress, -errno);
-            // Try Generic Mode
             link = bpf_program__attach_xdp(skel->progs.xdp_decompress_main, ifindex);
              if (!link) {
                 err = -1;
                 goto cleanup;
              }
         }
-        skel->links.xdp_decompress_main = link; // Persist link
+        skel->links.xdp_decompress_main = link; 
         printf("Attached XDP (Decompressor) to %s\n", iface_ingress);
     }
     
+    /* ==================================================== */
+    /* NEW: Pin the skeleton to the filesystem              */
+    /* ==================================================== */
+    // Pin everything (maps/progs) using standard libbpf logic
+    err = bpf_object__pin(skel->obj, "/sys/fs/bpf");
+    if (err) {
+        fprintf(stderr, "Warning: Failed to pin BPF object: %d\n", err);
+    } else {
+        printf("Successfully pinned BPF object to /sys/fs/bpf/\n");
+    }
+    /* ==================================================== */
+
     printf("Successfully attached! Press Ctrl+C to stop.\n");
     printf("Read trace_pipe to see logs: cat /sys/kernel/debug/tracing/trace_pipe\n");
     printf("Showing Performance Metrics (Ctrl+C to stop):\n");
 
-
-
     signal(SIGINT, sig_handler);
     signal(SIGTERM, sig_handler);
 
-    /* Stats Loop */
     if (mode == 0) {
         int stats_fd = bpf_map__fd(skel->maps.stats_map);
         struct perf_stats stats[2];
         __u32 key = 0;
         
         while (!exiting) {
-            printf("\033[H\033[J"); // Clear Screen
+            printf("\033[H\033[J"); 
             printf("=== Middlebox Performance Metrics ===\n");
             printf("%-20s | %-10s | %-10s | %-10s | %-10s\n", "Metric", "Count", "Min (ns)", "Avg (ns)", "Max (ns)");
             printf("---------------------|------------|------------|------------|------------\n");
 
-            /* Read Queue State (Local) */
             int q_map_fd = bpf_map__fd(skel->maps.queue_state_map);
             struct queue_state qs = {0};
             key = 0;
             bpf_map_lookup_elem(q_map_fd, &key, &qs);
             
-            /* Read Remote State */
             int r_map_fd = bpf_map__fd(skel->maps.remote_state_map);
             __u32 remote_state = 0;
             bpf_map_lookup_elem(r_map_fd, &key, &remote_state);
             
-            /* Calculate Operating State (Simulate Logic) */
              __u32 local_severity = 0;
-            if (qs.state == 1) local_severity = 1; // COMPRESS
-            else if (qs.state == 2) local_severity = 2; // DELTA
-            else if (qs.state == 3) local_severity = 3; // INCREMENTAL
-            else if (qs.state == 4) local_severity = 4; // DROP
+            if (qs.state == 1) local_severity = 1; 
+            else if (qs.state == 2) local_severity = 2; 
+            else if (qs.state == 3) local_severity = 3; 
+            else if (qs.state == 4) local_severity = 4; 
             
             __u32 remote_severity = 0;
             if (remote_state == 1) remote_severity = 1;
@@ -595,21 +501,18 @@ usage:
             __u32 key_stats = 0;
             struct perf_stats val;
             
-            /* 1. Compression Stats */
             key = 0;
             if (bpf_map_lookup_elem(stats_fd, &key, &val) == 0) {
                  __u64 avg = val.count ? val.sum_ns / val.count : 0;
                  printf("%-20s | %-10llu | %-10llu | %-10llu | %-10llu\n", "Compression Time", val.count, val.min_ns, avg, val.max_ns);
             }
 
-            /* 2. Sojourn Stats */
             key = 1;
             if (bpf_map_lookup_elem(stats_fd, &key, &val) == 0) {
                  __u64 avg = val.count ? val.sum_ns / val.count : 0;
                  printf("%-20s | %-10llu | %-10llu | %-10llu | %-10llu\n", "End-to-End Sojourn", val.count, val.min_ns, avg, val.max_ns);
             }
             
-            /* 3. Queue Depth (Congestion User Interface) */
             struct queue_state q_val;
             __u32 q_key = 0;
             int q_fd = bpf_map__fd(skel->maps.queue_state_map);
@@ -627,7 +530,6 @@ usage:
                  printf("Current Avg Sojourn: %.2f ms\n", lat_ms);
                  printf("Estimated Backlog: %llu bytes\n", q_val.current_bytes);
                  
-                 /* Visual Bar */
                  int percent = (q_val.current_bytes * 100) / 500000;
                  if (percent > 100) percent = 100;
 
@@ -638,7 +540,6 @@ usage:
                  }
                  printf("] %d%%\n", percent);
 
-                 /* CSV Logging */
                  FILE *log_fp = fopen("congestion_log.csv", "a");
                  if (log_fp) {
                      fprintf(log_fp, "%llu,%.2f,%llu,%u\n", (unsigned long long)time(NULL), lat_ms, q_val.current_bytes, q_val.state);
@@ -648,8 +549,6 @@ usage:
 
             printf("\n(Generating traffic in H1 will update these values)\n");
             
-
-
             sleep(1);
         }
     } else {
@@ -658,7 +557,6 @@ usage:
         }
     }
 
-    /* Cleanup handled by destroy, but TC needs explicit detach if MB mode */
     if (mode == 0) {
         int egress_ifindex = if_nametoindex(iface_egress);
         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook, .ifindex = egress_ifindex, .attach_point = BPF_TC_EGRESS);

@@ -307,8 +307,6 @@ int tc_prog_main(struct __sk_buff *skb) {
         struct queue_state *q = bpf_map_lookup_elem(&queue_state_map, &q_idx);
         
         if (q) {
-            update_stats(0, 0); 
-
             if (sojourn_ns > 0) {
                 if (q->avg_sojourn_ns == 0) {
                     q->avg_sojourn_ns = sojourn_ns;
@@ -325,15 +323,12 @@ int tc_prog_main(struct __sk_buff *skb) {
             else q->current_bytes -= drained;
             q->last_update_ns = now;
 
-            __u64 avg_lat = q->avg_sojourn_ns;
+            //__u64 avg_lat = q->avg_sojourn_ns;
+            __u64 avg_lat = q->current_bytes*20000;
+            q->avg_sojourn_ns = avg_lat;
             
-            /* Hysteresis Thresholds (in nanoseconds):
-               COMPRESS:    On > 15ms, Off < 10ms
-               DELTA:       On > 30ms, Off < 20ms
-               INCREMENTAL: On > 60ms, Off < 40ms
-               DROP:        On > 100ms, Off < 80ms
-            */
-            switch (q->state) {
+            /* Hysteresis Thresholds (in nanoseconds) */
+            /*switch (q->state) {
                 case STATE_NORMAL:
                     if (avg_lat > 15000000) q->state = STATE_COMPRESS;
                     break;
@@ -352,7 +347,7 @@ int tc_prog_main(struct __sk_buff *skb) {
                 case STATE_DROP:
                     if (avg_lat < 80000000) q->state = STATE_INCREMENTAL;
                     break;
-            }
+            }*/
 
             __u32 map_key = 0;
             __u32 *remote_state_ptr = bpf_map_lookup_elem(&remote_state_map, &map_key);
@@ -416,7 +411,7 @@ int tc_prog_main(struct __sk_buff *skb) {
         if (compress) {
             if (!key.is_ipv6 && key.proto == IPPROTO_UDP) {
                 struct iphdr *iph = (void *)(eth + 1);
-                if ((void *)(iph + 1) > data_end) return TC_ACT_OK; /* ADDED SAFETY CHECK */
+                if ((void *)(iph + 1) > data_end) return TC_ACT_OK;
                 struct udphdr *udp = (void *)(iph + 1);
                 if ((void *)(udp + 1) > data_end) return TC_ACT_OK;
                 
@@ -441,12 +436,18 @@ int tc_prog_main(struct __sk_buff *skb) {
 
             } else if (!key.is_ipv6 && key.proto == IPPROTO_TCP) {
                 struct iphdr *iph = (void *)(eth + 1);
-                if ((void *)(iph + 1) > data_end) return TC_ACT_OK; /* ADDED SAFETY CHECK */
+                if ((void *)(iph + 1) > data_end) return TC_ACT_OK;
                 struct tcphdr *tcp = (void *)(iph + 1);
                 if ((void *)tcp + 20 > data_end) return TC_ACT_SHOT;
                 
                 __u64 start_comp = bpf_ktime_get_ns();
+                
+                /* Extract variables BEFORE bpf_skb_adjust_room */
                 __u16 src_port = tcp->source;
+                __u32 seq = tcp->seq;
+                __u32 ack_seq = tcp->ack_seq;
+                __u16 window = tcp->window;
+                __u16 check = tcp->check;
                 __u8 flags = ((__u8 *)tcp)[13]; 
                 
                 __u32 tcp_len = tcp->doff * 4;
@@ -465,17 +466,17 @@ int tc_prog_main(struct __sk_buff *skb) {
                 
                 ch->flow_id = 2;
                 ch->src_port = src_port;
-                ch->seq = tcp->seq;
-                ch->ack_seq = tcp->ack_seq;
-                ch->window = tcp->window;
-                ch->check = tcp->check;
+                ch->seq = seq;
+                ch->ack_seq = ack_seq;
+                ch->window = window;
+                ch->check = check;
                 ch->flags = flags;
                 update_stats(0, bpf_ktime_get_ns() - start_comp);
                 return TC_ACT_OK;
 
             } else if (key.is_ipv6 && key.proto == IPPROTO_UDP) {
                 struct ipv6hdr *ipv6h = (void *)(eth + 1);
-                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK; /* ADDED SAFETY CHECK */
+                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK;
                 struct udphdr *udp = (void *)(ipv6h + 1);
                 if ((void *)(udp + 1) > data_end) return TC_ACT_OK;
                     
@@ -500,12 +501,18 @@ int tc_prog_main(struct __sk_buff *skb) {
 
             } else if (key.is_ipv6 && key.proto == IPPROTO_TCP) {
                 struct ipv6hdr *ipv6h = (void *)(eth + 1);
-                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK; /* ADDED SAFETY CHECK */
+                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK;
                 struct tcphdr *tcp = (void *)(ipv6h + 1);
                 if ((void *)tcp + 20 > data_end) return TC_ACT_SHOT;
                 
                 __u64 start_comp = bpf_ktime_get_ns();
+                
+                /* Extract variables BEFORE bpf_skb_adjust_room */
                 __u16 src_port = tcp->source;
+                __u32 seq = tcp->seq;
+                __u32 ack_seq = tcp->ack_seq;
+                __u16 window = tcp->window;
+                __u16 check = tcp->check;
                 __u8 flags = ((__u8 *)tcp)[13]; 
                 
                 __u32 tcp_len = tcp->doff * 4;
@@ -524,10 +531,10 @@ int tc_prog_main(struct __sk_buff *skb) {
                 
                 ch->flow_id = 4; 
                 ch->src_port = src_port;
-                ch->seq = tcp->seq;
-                ch->ack_seq = tcp->ack_seq;
-                ch->window = tcp->window;
-                ch->check = tcp->check;
+                ch->seq = seq;
+                ch->ack_seq = ack_seq;
+                ch->window = window;
+                ch->check = check;
                 ch->flags = flags;
                 update_stats(0, bpf_ktime_get_ns() - start_comp);
                 return TC_ACT_OK;
@@ -741,13 +748,17 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         /* Fix Payload Length */
         ipv6h->payload_len = bpf_htons((void *)data_end - (void *)udp);
         udp->len = ipv6h->payload_len;
-    }else if(flow_id == 4){
-
-       struct compressed_tcp_hdr *ctcp = (void *)(eth + 1);
+        
+    } else if (flow_id == 4) {
+        struct compressed_tcp_hdr *ctcp = (void *)(eth + 1);
         if ((void *)(ctcp + 1) > data_end) return XDP_DROP;
 
+        /* Extract ALL fields before adjust_head invalidates the pointer */
         __u16 src_port = ctcp->src_port;
-        /* Extract other fields like seq, ack, flags... */
+        __u32 seq      = ctcp->seq;
+        __u32 ack_seq  = ctcp->ack_seq;
+        __u16 window   = ctcp->window;
+        __u8 flags     = ctcp->flags;
 
         struct flow_context *ctx_hdr = bpf_map_lookup_elem(&context_map, &flow_id);
         if (!ctx_hdr || !ctx_hdr->is_ipv6) return XDP_PASS;
@@ -772,15 +783,15 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         __builtin_memcpy(ipv6h, &ctx_hdr->ipv6, sizeof(struct ipv6hdr));
         __builtin_memcpy(tcp, &ctx_hdr->tcp, sizeof(struct tcphdr));
 
-        /* Restore Dynamic Fields */
+        /* Restore Dynamic Fields using local variables */
         tcp->source = src_port;
-        tcp->seq = ctcp->seq;
-        tcp->ack_seq = ctcp->ack_seq;
-        tcp->window = ctcp->window;
+        tcp->seq = seq;
+        tcp->ack_seq = ack_seq;
+        tcp->window = window;
         
         __u8 *tcp_bytes = (void *)tcp;
         tcp_bytes[12] = 0x50; // Data Offset 5 (20 bytes), Res 0
-        tcp_bytes[13] = ctcp->flags;
+        tcp_bytes[13] = flags;
 
         ipv6h->payload_len = bpf_htons((void *)data_end - (void *)tcp);
         tcp->check = 0; 

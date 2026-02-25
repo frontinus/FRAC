@@ -1,3 +1,13 @@
+#!/bin/bash
+
+# ==========================================
+# 1. Mount the eBPF Filesystem
+# ==========================================
+# This ensures loader.c can successfully pin the maps
+# so force_state.py can communicate with them.
+mount -t bpf bpf /sys/fs/bpf/ 2>/dev/null || true
+mkdir -p /sys/fs/bpf/frac 2>/dev/null || true
+
 nuke() {
     echo "  [Nuke] tearing down namespaces..."
     for ns in H1 H2 MiddleBox; do
@@ -16,6 +26,9 @@ setup_network() {
     ip netns add H1
     ip netns add H2
     ip netns add MiddleBox
+    ip netns exec MiddleBox umount /sys/fs/bpf 2>/dev/null || true
+    ip netns exec MiddleBox mount -t bpf bpf /sys/fs/bpf/ 2>/dev/null || true
+    ip netns exec MiddleBox rm -rf /sys/fs/bpf/* 2>/dev/null || true
 
     ip link add veth1 type veth peer name veth1-mb
     ip link set veth1 netns H1

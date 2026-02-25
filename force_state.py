@@ -5,38 +5,50 @@ disrupting current_bytes / last_update_ns.
 
 Usage:  force_state.py <target_state>
    target_state: 0=NORMAL, 1=COMPRESS, 2=DELTA, 3=INCREMENTAL
-
-Reads the current queue_state_map value, overwrites ONLY the
-state field (offset 16, 4 bytes LE), then writes back.
-Repeats every 1.5 s until killed.
 """
 import subprocess, json, struct, sys, time
 
 TARGET = int(sys.argv[1])
+PINNED_MAP_PATH = "/sys/fs/bpf/queue_state_map"
 
 while True:
     try:
         r = subprocess.run(
-            ["bpftool", "-j", "map", "dump", "name", "queue_state_map"],
+            ["bpftool", "-j", "map", "dump", "pinned", PINNED_MAP_PATH],
             capture_output=True, text=True, timeout=5
         )
-        entries = json.loads(r.stdout or "[]")
-        if entries:
-            raw_key = bytes(entries[0]["value"][:4])   # key is 4 bytes
-            raw_val = bytearray(entries[0]["value"])    # full value
+        
+        if not r.stdout.strip():
+            time.sleep(1.5)
+            continue
 
-            # struct queue_state { u64 last_update_ns; u64 current_bytes; u32 state; }
-            # state lives at byte offset 16
+        entries = json.loads(r.stdout)
+        
+        # Catch bpftool system errors (like missing maps)
+        if isinstance(entries, dict) and "error" in entries:
+            print(f"BPF Map Error: {entries['error']} (Is loader running?)")
+            time.sleep(1.5)
+            continue
+            
+        # If it's a valid list, update the state
+        if isinstance(entries, list) and len(entries) > 0:
+            key_ints = [int(x, 16) for x in entries[0]["key"]]
+            val_ints = [int(x, 16) for x in entries[0]["value"]]
+            
+            raw_val = bytearray(val_ints)
             struct.pack_into("<I", raw_val, 16, TARGET)
 
-            hex_key = " ".join(f"0x{b:02x}" for b in bytes(entries[0]["key"]))
+            hex_key = " ".join(f"0x{b:02x}" for b in key_ints)
             hex_val = " ".join(f"0x{b:02x}" for b in raw_val)
 
             subprocess.run(
-                ["bpftool", "map", "update", "name", "queue_state_map",
+                ["bpftool", "map", "update", "pinned", PINNED_MAP_PATH,
                  "key"] + hex_key.split() + ["value"] + hex_val.split(),
                 capture_output=True, timeout=5
             )
-    except Exception:
-        pass
+            
+    except Exception as e:
+        # Expose the actual Python error type and message
+        print(f"Python Crash: {type(e).__name__}: {e}")
+        
     time.sleep(1.5)
