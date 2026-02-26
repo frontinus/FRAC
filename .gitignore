@@ -1,0 +1,20 @@
+# Build artifacts
+src/*.o
+src/*.skel.h
+src/loader
+src/delta_agent_c
+src/decompress_agent
+
+# Experiment results
+results/
+*.csv
+*.png
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE / editor
+.vscode/
+*.swp
+*~

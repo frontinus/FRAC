@@ -9,29 +9,27 @@ To run the comparative experiment and evaluate the different compression strateg
    cd /home/vboxuser/Documents/EBPF_proj
    ```
 
-2. **Make the experiment script executable** (if not already):
+2. **Run the experiment with sudo** (pick one topology):
    ```bash
-   chmod +x run_clean_comparative.sh
+   # Single-MB (3 namespaces) — measures sojourn time
+   // turbo
+   sudo bash scripts/run_comparative.sh --topology single
+
+   # Dual-MB (4 namespaces) — measures e2e latency, transparent compression
+   // turbo
+   sudo bash scripts/run_comparative.sh --topology dual
    ```
 
-3. **Run the experiment with sudo**:
-   ```bash
-   sudo ./run_clean_comparative.sh
-   ```
-
-4. **Enter your password** when prompted:
-   `likikokin10`
-
-5. **Wait for completion**:
+3. **Wait for completion**:
    The script will compile the C components, set up the network namespaces, and run each of the four phases sequentially. Each phase takes about 45-60 seconds.
 
-6. **Review Results**:
-   - The summary table will be printed to the terminal and saved in `sink_summary.csv`.
-   - A comparative plot will be generated as `comparative_plot.png`.
-   - Phase-specific sojourn metrics are saved as `*_sojourn.csv`.
+4. **Review Results (in `results/` directory)**:
+   - Summary table printed to terminal and saved in `results/sink_summary.csv`.
+   - Comparative plot generated as `results/comparative_plot.png`.
+   - Phase-specific sojourn metrics: `results/*_sojourn.csv`.
+   - Dual-MB only: E2E latency CSVs (`results/e2e_latency_*.csv`) and plots (`results/dual_mb_comparison.png`, `results/dual_mb_e2e_latency.png`).
 
-7. **Visualize Sojourn Times** (Optional):
-   You can run the separate plotting script to see detailed latency trends:
+5. **Visualize Sojourn Times** (Optional):
    ```bash
-   python3 plot_sojourn.py
+   python3 scripts/plot_sojourn.py
    ```

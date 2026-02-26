@@ -20,9 +20,9 @@
 struct flow_context {
     __u8 is_ipv6;
     struct iphdr ip;
+    struct ipv6hdr ipv6;
     struct udphdr udp;
     struct tcphdr tcp;
-    struct ipv6hdr ipv6;
 };
 
 /* Stats Struct */
@@ -228,30 +228,30 @@ usage:
         fprintf(stderr, "Failed to load BPF skeleton: %d\n", err);
         goto cleanup;
     }
-
-    struct bpf_tc_hook hook;
-    struct bpf_tc_opts opts;
-    memset(&hook, 0, sizeof(hook));
-    hook.sz = sizeof(hook);
-    hook.ifindex = if_nametoindex(argv[1]);
-    hook.attach_point = BPF_TC_INGRESS;
+    if (mode == 0) {
+        struct bpf_tc_hook hook;
+        struct bpf_tc_opts opts;
+        memset(&hook, 0, sizeof(hook));
+        hook.sz = sizeof(hook);
+        hook.ifindex = if_nametoindex(argv[1]);
+        hook.attach_point = BPF_TC_INGRESS;
     
-    err = bpf_tc_hook_create(&hook);
-    if (err && err != -EEXIST) {
-        fprintf(stderr, "Failed to create TC hook: %d\n", err);
-        goto cleanup;
-    }
+        err = bpf_tc_hook_create(&hook);
+        if (err && err != -EEXIST) {
+            fprintf(stderr, "Failed to create TC hook: %d\n", err);
+            goto cleanup;
+        }
 
-    memset(&opts, 0, sizeof(opts));
-    opts.sz = sizeof(opts);
-    opts.prog_fd = bpf_program__fd(skel->progs.tc_prog_main);
-    err = bpf_tc_attach(&hook, &opts);
-    if (err) {
-        fprintf(stderr, "Failed to attach TC: %d\n", err);
-        goto cleanup;
+        memset(&opts, 0, sizeof(opts));
+        opts.sz = sizeof(opts);
+        opts.prog_fd = bpf_program__fd(skel->progs.tc_prog_main);
+        err = bpf_tc_attach(&hook, &opts);
+        if (err) {
+            fprintf(stderr, "Failed to attach TC: %d\n", err);
+            goto cleanup;
+        }
+        printf("Attached TC (Compression) to %s\n", argv[1]);
     }
-    printf("Attached TC (Compression) to %s\n", argv[1]);
-
     struct flow_context ctx;
     memset(&ctx, 0, sizeof(ctx));
     
@@ -425,11 +425,18 @@ usage:
     /* NEW: Pin the skeleton to the filesystem              */
     /* ==================================================== */
     // Pin everything (maps/progs) using standard libbpf logic
-    err = bpf_object__pin(skel->obj, "/sys/fs/bpf");
+    err = bpf_map__pin(skel->maps.queue_state_map, "/sys/fs/bpf/queue_state_map");
     if (err) {
-        fprintf(stderr, "Warning: Failed to pin BPF object: %d\n", err);
+        fprintf(stderr, "Warning: Failed to pin queue_state_map: %d (errno=%d)\n", err, errno);
     } else {
-        printf("Successfully pinned BPF object to /sys/fs/bpf/\n");
+        printf("Pinned queue_state_map to /sys/fs/bpf/queue_state_map\n");
+    }
+
+    err = bpf_map__pin(skel->maps.packet_ts, "/sys/fs/bpf/packet_ts");
+    if (err) {
+        fprintf(stderr, "Warning: Failed to pin packet_ts: %d (errno=%d)\n", err, errno);
+    } else {
+        printf("Pinned packet_ts to /sys/fs/bpf/packet_ts\n");
     }
     /* ==================================================== */
 
@@ -542,7 +549,7 @@ usage:
 
                  FILE *log_fp = fopen("congestion_log.csv", "a");
                  if (log_fp) {
-                     fprintf(log_fp, "%llu,%.2f,%llu,%u\n", (unsigned long long)time(NULL), lat_ms, q_val.current_bytes, q_val.state);
+                     fprintf(log_fp, "%llu,%.6f,%llu,%u\n", (unsigned long long)time(NULL), lat_ms, q_val.current_bytes, q_val.state);
                      fclose(log_fp);
                  }
             }

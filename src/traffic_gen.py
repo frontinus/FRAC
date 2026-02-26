@@ -8,6 +8,7 @@ import datetime
 import threading
 import struct
 import os
+import crypto_utils
 
 # DSCP Values
 DSCP_EF = 46 << 2   # Expedited Forwarding (High Priority - CoT/Voice)
@@ -63,17 +64,28 @@ class TrafficStream(threading.Thread):
         self.stop_event.set()
 
 class CoTStream(TrafficStream):
-    def __init__(self, target_ip, target_port, duration, rate=1.0, encrypt=False, dscp=DSCP_EF, udp=False, payload_size=0):
+    def __init__(self, target_ip, target_port, duration, rate=1.0, encrypt=False, dscp=DSCP_EF, udp=False, payload_size=0, ramp_to=0, e2e_timestamp=False):
         super().__init__(target_ip, target_port, duration)
         self.rate = rate
+        self.ramp_to = ramp_to  # If > 0, linearly ramp from rate to ramp_to
         self.packet_size = 512 # Standard CoT is smallish
         self.payload_size_target = payload_size
         self.name_type = "CoT"
         self.encrypt = encrypt
         self.udp = udp
+        self.e2e_timestamp = e2e_timestamp
+        self._start_time = None
         self.uid = f"uuid-{random.randint(1000,9999)}"
         self.lat = 34.0
         self.lon = -118.0
+        self._crypto_key = None
+        if encrypt:
+            try:
+                self._crypto_key = crypto_utils.load_key("efrac.psk")
+                print(f"[CoT] AES-256-GCM encryption enabled (key derived from efrac.psk)")
+            except Exception as e:
+                print(f"[CoT] WARNING: Could not load encryption key: {e}")
+                print(f"[CoT] Encryption disabled.")
         
         # Setup Socket
         if self.udp:
@@ -113,7 +125,7 @@ class CoTStream(TrafficStream):
         xml = f'''<?xml version="1.0" standalone="yes"?>
 <event version="2.0" uid="{self.uid}" type="a-f-G-U-C" time="{time_str}" start="{time_str}" stale="{stale_str}">
     <point lat="{self.lat}" lon="{self.lon}" hae="0.0" ce="9999999" le="9999999"/>
-    <detail>
+    <detail{f' e2e_ts="{time.time():.6f}"' if self.e2e_timestamp else ""}>
         <contact callsign="GroundUnit-{self.uid[-4:]}"/>
     </detail>
 </event>'''
@@ -128,16 +140,30 @@ class CoTStream(TrafficStream):
                 # Trailing bytes is safer/easier for simple sizing
                 event_data += b' ' * padding_len
         
-        if getattr(self, 'encrypt', False):
-             event_data = b'\xAA' * len(event_data)
+        if self._crypto_key is not None:
+            event_data = crypto_utils.encrypt(self._crypto_key, event_data)
         
+        # When e2e_timestamp is set, append an 8-byte trailer (network-order double)
+        # outside the encryption envelope so it survives compression losslessly.
+        if self.e2e_timestamp:
+            event_data += struct.pack('!d', time.time())
+
         # Batching Optimization: Controlled via batch_size (set to 1 for experiment consistency)
         self.batch_size = 1
         return event_data * self.batch_size
         
+    def _current_rate(self):
+        """Return the current pps rate, ramping linearly if ramp_to is set."""
+        if self.ramp_to <= 0 or self.duration <= 0:
+            return self.rate
+        if self._start_time is None:
+            self._start_time = time.time()
+        elapsed = time.time() - self._start_time
+        progress = min(elapsed / self.duration, 1.0)
+        return self.rate + (self.ramp_to - self.rate) * progress
+
     def generate_packet(self):
         try:
-            # Generate fresh data for every packet (dynamic timestamps)
             data = self._create_packet_data()
             if self.udp:
                 self.sock.sendto(data, (self.target_ip, self.target_port))
@@ -145,21 +171,14 @@ class CoTStream(TrafficStream):
                 self.sock.sendall(data)
             self.stats['sent_packets'] += self.batch_size
             self.stats['bytes_sent'] += len(data)
-            
-            # Log sample of sent data
-            if self.stats['sent_packets'] <= self.batch_size * 2: # Print only first couple of batches
-                 data_sample = self.pregenerated_data[:100]
-                 try:
-                     print(f"[{self.name_type}] Tx Sample: {data_sample.decode('utf-8')}...")
-                 except:
-                     print(f"[{self.name_type}] Tx Sample: {data_sample} (Binary)")
 
         except Exception as e:
             print(f"[{self.name_type}] Send failed: {e}")
             self.stop()
-            
-        if self.rate < 1000:
-            time.sleep(1.0 / self.rate)
+
+        current_rate = self._current_rate()
+        if current_rate < 50000:
+            time.sleep(1.0 / current_rate)
         return True
 
 class VideoStream(TrafficStream):
@@ -474,19 +493,20 @@ if __name__ == "__main__":
     parser.add_argument("target_ip", nargs="?", help="Target IP address")
     parser.add_argument("--mode", choices=["cot", "video", "voice", "xmpp", "mixed"], help="Traffic mode")
     parser.add_argument("--duration", type=int, default=30, help="Duration in seconds")
-    parser.add_argument("--rate", type=float, default=1.0, help="Packets per second for CoT")
-    parser.add_argument("--encrypt", action="store_true", help="Simulate encryption (Send 0xAA)")
+    parser.add_argument("--rate", type=float, default=1.0, help="Starting packets per second for CoT")
+    parser.add_argument("--ramp_to", type=float, default=0, help="Ramp rate linearly to this pps over duration (0=constant)")
     parser.add_argument("--dscp", type=lambda x: int(x,0), default=DSCP_EF, help="DSCP Value (can use hex 0x50)")
     parser.add_argument("--port", type=int, default=8087, help="Target Port (default 8087)")
     
     parser.add_argument("--udp", action="store_true", help="Use UDP for CoT")
     parser.add_argument("--payload_size", type=int, default=0, help="Target payload size (padding)")
+    parser.add_argument("--encrypt", action="store_true", help="Encrypt payload with AES-256-GCM (requires efrac.psk)")
+    parser.add_argument("--e2e_timestamp", action="store_true", help="Embed send timestamp for e2e latency")
     
     args = parser.parse_args()
 
-    # Patched Run Logic to use Encrypt Flag
     if args.encrypt:
-        print("Encryption Enabled (Simulated)")
+        print("AES-256-GCM Encryption Enabled (HKDF key from efrac.psk)")
         pass
 
     try:
@@ -495,7 +515,7 @@ if __name__ == "__main__":
             threads = []
             if args.mode == "cot" or args.mode == "mixed":
                 # CoT Stream
-                cot = CoTStream(args.target_ip, args.port, args.duration, rate=args.rate, encrypt=args.encrypt, dscp=args.dscp, udp=args.udp, payload_size=args.payload_size)
+                cot = CoTStream(args.target_ip, args.port, args.duration, rate=args.rate, encrypt=args.encrypt, dscp=args.dscp, udp=args.udp, payload_size=args.payload_size, ramp_to=args.ramp_to, e2e_timestamp=args.e2e_timestamp)
                 threads.append(cot)
                 if args.mode == "mixed":
                     threads.append(VideoStream(args.target_ip, 5000, args.duration))

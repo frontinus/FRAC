@@ -290,6 +290,14 @@ int tc_prog_main(struct __sk_buff *skb) {
             }
         }
     }
+    /* Skip locally-generated packets (delta agent output) to prevent redirect loop */
+    if (!key.is_ipv6) {
+        __be32 mb_ip1 = (__be32)bpf_htonl(0x0A000202); /* 10.0.2.2 = single-MB egress */
+        __be32 mb_ip2 = (__be32)bpf_htonl(0x0A000102); /* 10.0.1.2 = dual-MB subnet A */
+        __be32 mb_ip3 = (__be32)bpf_htonl(0x0A006401); /* 10.0.100.1 = dual-MB link */
+        if (key.src_ip[0] == mb_ip1 || key.src_ip[0] == mb_ip2 || key.src_ip[0] == mb_ip3)
+            return TC_ACT_OK;
+    }
 
     /* 2. Measure Sojourn Time */
     __u64 sojourn_ns = 0;
@@ -297,7 +305,7 @@ int tc_prog_main(struct __sk_buff *skb) {
     if (ts) {
         sojourn_ns = bpf_ktime_get_ns() - *ts;
         update_stats(1, sojourn_ns);
-        bpf_map_delete_elem(&packet_ts, &key);
+        /* Don't delete yet — agent may need it for redirected packets */
     }
 
     /* 3. Congestion Logic & Action */
@@ -307,25 +315,38 @@ int tc_prog_main(struct __sk_buff *skb) {
         struct queue_state *q = bpf_map_lookup_elem(&queue_state_map, &q_idx);
         
         if (q) {
-            if (sojourn_ns > 0) {
-                if (q->avg_sojourn_ns == 0) {
-                    q->avg_sojourn_ns = sojourn_ns;
-                } else {
-                    q->avg_sojourn_ns = (q->avg_sojourn_ns * 7 / 8) + (sojourn_ns / 8);
-                }
+            __u64 now = bpf_ktime_get_ns();
+
+            /* --- Time-varying drain rate (V-shape) --- */
+            /* Use link_capacity_bps to store program start time */
+            if (q->link_capacity_bps == 0)
+                q->link_capacity_bps = now;
+
+            __u64 elapsed_ns = now - q->link_capacity_bps;
+            __u64 elapsed_s = elapsed_ns / 1000000000ULL;
+
+            /* V-shape: 5000 ns/byte → 20000 ns/byte → 5000 ns/byte over 40s */
+            /* 5000 ns/byte  = 200 KB/s drain (fast, no congestion) */
+            /* 20000 ns/byte = 50 KB/s drain  (slow, congestion builds) */
+            __u64 ns_per_byte;
+            if (elapsed_s < 20) {
+                ns_per_byte = 5000 + (elapsed_s * 750);  /* 5000 → 20000 */
+            } else if (elapsed_s < 40) {
+                __u64 recover = elapsed_s - 20;
+                ns_per_byte = 20000 - (recover * 750);   /* 20000 → 5000 */
+            } else {
+                ns_per_byte = 5000;
             }
 
-            __u64 now = bpf_ktime_get_ns();
             __u64 delta = now - q->last_update_ns;
-            __u64 drained = delta / 20000; 
+            __u64 drained = delta / ns_per_byte;
 
             if (drained > q->current_bytes) q->current_bytes = 0;
             else q->current_bytes -= drained;
             q->last_update_ns = now;
 
-            //__u64 avg_lat = q->avg_sojourn_ns;
-            __u64 avg_lat = q->current_bytes*20000;
-            q->avg_sojourn_ns = avg_lat;
+            /* Virtual queue sojourn: estimated queuing delay */
+            q->avg_sojourn_ns = q->current_bytes * ns_per_byte;
             
             /* Hysteresis Thresholds (in nanoseconds) */
             /*switch (q->state) {
@@ -393,152 +414,18 @@ int tc_prog_main(struct __sk_buff *skb) {
             __u32 physical_len = pkt_len;
             if (operating_state == STATE_COMPRESS) physical_len = pkt_len - 22;
             else if (operating_state == STATE_DELTA) physical_len = pkt_len / 2;
-            else if (operating_state == STATE_INCREMENTAL) physical_len = pkt_len / 5;
+            else if (operating_state == STATE_INCREMENTAL) physical_len = pkt_len / 8;
 
             q->current_bytes += physical_len;
             if (q->current_bytes > 500000) q->current_bytes = 500000;
 
             if (operating_state == STATE_COMPRESS || operating_state == STATE_DELTA || operating_state == STATE_INCREMENTAL) {
-                   int key_delta = 1;
-                   int *delta_if_idx = bpf_map_lookup_elem(&tx_port, &key_delta);
-                   if (delta_if_idx && operating_state != STATE_COMPRESS) {
-                       return bpf_redirect(*delta_if_idx, 0);
-                   }
-            }
-        }
-
-        /* 4. Execute Compression */
-        if (compress) {
-            if (!key.is_ipv6 && key.proto == IPPROTO_UDP) {
-                struct iphdr *iph = (void *)(eth + 1);
-                if ((void *)(iph + 1) > data_end) return TC_ACT_OK;
-                struct udphdr *udp = (void *)(iph + 1);
-                if ((void *)(udp + 1) > data_end) return TC_ACT_OK;
-                
-                __u64 start_comp = bpf_ktime_get_ns();
-                __u16 src_port = udp->source;
-
-                if (bpf_skb_adjust_room(skb, (int)sizeof(struct compressed_hdr) - (int)(sizeof(struct iphdr) + sizeof(struct udphdr)), BPF_ADJ_ROOM_NET, 0)) return TC_ACT_SHOT;
-                
-                data = (void *)(long)skb->data;
-                data_end = (void *)(long)skb->data_end;
-                eth = data;
-                if ((void *)(eth + 1) > data_end) return TC_ACT_SHOT;
-                
-                eth->h_proto = bpf_htons(ETH_P_COMP);
-                struct compressed_hdr *ch = (void *)(eth + 1);
-                if ((void *)(ch + 1) > data_end) return TC_ACT_SHOT;
-                
-                ch->flow_id = 1;
-                ch->src_port = src_port;
-                update_stats(0, bpf_ktime_get_ns() - start_comp);
-                return TC_ACT_OK;
-
-            } else if (!key.is_ipv6 && key.proto == IPPROTO_TCP) {
-                struct iphdr *iph = (void *)(eth + 1);
-                if ((void *)(iph + 1) > data_end) return TC_ACT_OK;
-                struct tcphdr *tcp = (void *)(iph + 1);
-                if ((void *)tcp + 20 > data_end) return TC_ACT_SHOT;
-                
-                __u64 start_comp = bpf_ktime_get_ns();
-                
-                /* Extract variables BEFORE bpf_skb_adjust_room */
-                __u16 src_port = tcp->source;
-                __u32 seq = tcp->seq;
-                __u32 ack_seq = tcp->ack_seq;
-                __u16 window = tcp->window;
-                __u16 check = tcp->check;
-                __u8 flags = ((__u8 *)tcp)[13]; 
-                
-                __u32 tcp_len = tcp->doff * 4;
-                if (tcp_len < 20) tcp_len = 20;
-
-                if (bpf_skb_adjust_room(skb, (int)sizeof(struct compressed_tcp_hdr) - (int)(sizeof(struct iphdr) + tcp_len), BPF_ADJ_ROOM_NET, 0)) return TC_ACT_SHOT;
-                
-                data = (void *)(long)skb->data;
-                data_end = (void *)(long)skb->data_end;
-                eth = data;
-                if ((void *)(eth + 1) > data_end) return TC_ACT_SHOT;
-                
-                eth->h_proto = bpf_htons(ETH_P_COMP);
-                struct compressed_tcp_hdr *ch = (void *)(eth + 1);
-                if ((void *)(ch + 1) > data_end) return TC_ACT_SHOT;
-                
-                ch->flow_id = 2;
-                ch->src_port = src_port;
-                ch->seq = seq;
-                ch->ack_seq = ack_seq;
-                ch->window = window;
-                ch->check = check;
-                ch->flags = flags;
-                update_stats(0, bpf_ktime_get_ns() - start_comp);
-                return TC_ACT_OK;
-
-            } else if (key.is_ipv6 && key.proto == IPPROTO_UDP) {
-                struct ipv6hdr *ipv6h = (void *)(eth + 1);
-                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK;
-                struct udphdr *udp = (void *)(ipv6h + 1);
-                if ((void *)(udp + 1) > data_end) return TC_ACT_OK;
-                    
-                __u64 start_comp = bpf_ktime_get_ns();
-                __u16 src_port = udp->source;
-
-                if (bpf_skb_adjust_room(skb, (int)sizeof(struct compressed_hdr) - (int)(sizeof(struct ipv6hdr) + sizeof(struct udphdr)), BPF_ADJ_ROOM_NET, 0)) return TC_ACT_SHOT;
-                    
-                data = (void *)(long)skb->data;
-                data_end = (void *)(long)skb->data_end;
-                eth = data;
-                if ((void *)(eth + 1) > data_end) return TC_ACT_SHOT;
-                    
-                eth->h_proto = bpf_htons(ETH_P_COMP);
-                struct compressed_hdr *ch = (void *)(eth + 1);
-                if ((void *)(ch + 1) > data_end) return TC_ACT_SHOT;
-                
-                ch->flow_id = 3; 
-                ch->src_port = src_port;
-                update_stats(0, bpf_ktime_get_ns() - start_comp);
-                return TC_ACT_OK;
-
-            } else if (key.is_ipv6 && key.proto == IPPROTO_TCP) {
-                struct ipv6hdr *ipv6h = (void *)(eth + 1);
-                if ((void *)(ipv6h + 1) > data_end) return TC_ACT_OK;
-                struct tcphdr *tcp = (void *)(ipv6h + 1);
-                if ((void *)tcp + 20 > data_end) return TC_ACT_SHOT;
-                
-                __u64 start_comp = bpf_ktime_get_ns();
-                
-                /* Extract variables BEFORE bpf_skb_adjust_room */
-                __u16 src_port = tcp->source;
-                __u32 seq = tcp->seq;
-                __u32 ack_seq = tcp->ack_seq;
-                __u16 window = tcp->window;
-                __u16 check = tcp->check;
-                __u8 flags = ((__u8 *)tcp)[13]; 
-                
-                __u32 tcp_len = tcp->doff * 4;
-                if (tcp_len < 20) tcp_len = 20;
-
-                if (bpf_skb_adjust_room(skb, (int)sizeof(struct compressed_tcp_hdr) - (int)(sizeof(struct ipv6hdr) + tcp_len), BPF_ADJ_ROOM_NET, 0)) return TC_ACT_SHOT;
-                
-                data = (void *)(long)skb->data;
-                data_end = (void *)(long)skb->data_end;
-                eth = data;
-                if ((void *)(eth + 1) > data_end) return TC_ACT_SHOT;
-                
-                eth->h_proto = bpf_htons(ETH_P_COMP);
-                struct compressed_tcp_hdr *ch = (void *)(eth + 1);
-                if ((void *)(ch + 1) > data_end) return TC_ACT_SHOT;
-                
-                ch->flow_id = 4; 
-                ch->src_port = src_port;
-                ch->seq = seq;
-                ch->ack_seq = ack_seq;
-                ch->window = window;
-                ch->check = check;
-                ch->flags = flags;
-                update_stats(0, bpf_ktime_get_ns() - start_comp);
-                return TC_ACT_OK;
-            }
+                int key_delta = 1;
+                int *delta_if_idx = bpf_map_lookup_elem(&tx_port, &key_delta);
+                if (delta_if_idx) {
+                    return bpf_redirect(*delta_if_idx, 0);
+                }
+            }   
         }
     }
 
@@ -582,7 +469,15 @@ int xdp_peer_ingress(struct xdp_md *ctx) {
     
     return XDP_PASS;
 }
-
+static __always_inline __u16 calc_ip_csum(struct iphdr *iph) {
+    __u16 *p = (__u16 *)iph;
+    __u32 csum = 0;
+    csum += p[0]; csum += p[1]; csum += p[2]; csum += p[3]; csum += p[4];
+    csum += p[5]; csum += p[6]; csum += p[7]; csum += p[8]; csum += p[9];
+    csum = (csum >> 16) + (csum & 0xffff);
+    csum += (csum >> 16);
+    return (__u16)~csum;
+}
 /* XDP: Decompressor Hook (H2 Ingress) */
 SEC("xdp")
 int xdp_decompress_main(struct xdp_md *ctx) {
@@ -603,6 +498,10 @@ int xdp_decompress_main(struct xdp_md *ctx) {
     if (flow_id == 1) {
         /* UDP Decompression */
         __u16 src_port = ch->src_port;
+
+        unsigned char dst_mac[6], src_mac[6];
+        __builtin_memcpy(dst_mac, eth->h_dest,   6);
+        __builtin_memcpy(src_mac, eth->h_source,  6);
 
         /* Lookup Context - For PoC we can hardcode if map fails, but let's try map */
         struct flow_context *ctx_hdr = bpf_map_lookup_elem(&context_map, &flow_id);
@@ -625,8 +524,11 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         eth = data;
         
         if ((void *)(eth + 1) > data_end) return XDP_DROP;
-        
+
+        __builtin_memcpy(eth->h_dest,   dst_mac, 6);
+        __builtin_memcpy(eth->h_source, src_mac, 6);
         eth->h_proto = bpf_htons(ETH_P_IP);
+        
 
         struct iphdr *iph = (void *)(eth + 1);
         struct udphdr *udp = (void *)(iph + 1);
@@ -645,9 +547,14 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         udp->len = bpf_htons((void *)data_end - (void *)udp);
         
         /* Fix Checksums */
-        iph->check = 0; 
+        iph->check = 0;
+        iph->check = calc_ip_csum(iph);
         
     } else if (flow_id == 2) {
+        unsigned char dst_mac[6], src_mac[6];
+        __builtin_memcpy(dst_mac, eth->h_dest,   6);
+        __builtin_memcpy(src_mac, eth->h_source,  6);
+
         /* TCP Decompression */
         struct compressed_tcp_hdr *ctcp = (void *)(eth + 1);
         if ((void *)(ctcp + 1) > data_end) return XDP_DROP;
@@ -675,6 +582,8 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         eth = data;
         
         if ((void *)(eth + 1) > data_end) return XDP_DROP;
+        __builtin_memcpy(eth->h_dest,   dst_mac, 6);
+        __builtin_memcpy(eth->h_source, src_mac, 6);
         eth->h_proto = bpf_htons(ETH_P_IP);
 
         struct iphdr *iph = (void *)(eth + 1);
@@ -706,6 +615,7 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         iph->tot_len = bpf_htons((void *)data_end - (void *)iph);
         iph->protocol = IPPROTO_TCP; /* Ensure proto is TCP */
         iph->check = 0;
+        iph->check = calc_ip_csum(iph);
 
         /* Re-calc TCP Checksum? 
            We kept the original checksum from the compressed header.
@@ -719,6 +629,10 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         tcp->check = 0; 
     }else if(flow_id == 3){
         __u16 src_port = ch->src_port;
+        unsigned char dst_mac[6], src_mac[6];
+        __builtin_memcpy(dst_mac, eth->h_dest,   6);
+        __builtin_memcpy(src_mac, eth->h_source,  6);
+
 
         struct flow_context *ctx_hdr = bpf_map_lookup_elem(&context_map, &flow_id);
         if (!ctx_hdr || !ctx_hdr->is_ipv6) return XDP_PASS; 
@@ -733,6 +647,8 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         eth = data;
         if ((void *)(eth + 1) > data_end) return XDP_DROP;
         
+        __builtin_memcpy(eth->h_dest,   dst_mac, 6);
+        __builtin_memcpy(eth->h_source, src_mac, 6);
         eth->h_proto = bpf_htons(ETH_P_IPV6);
 
         struct ipv6hdr *ipv6h = (void *)(eth + 1);
@@ -750,6 +666,10 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         udp->len = ipv6h->payload_len;
         
     } else if (flow_id == 4) {
+        unsigned char dst_mac[6], src_mac[6];
+        __builtin_memcpy(dst_mac, eth->h_dest,   6);
+        __builtin_memcpy(src_mac, eth->h_source,  6);
+
         struct compressed_tcp_hdr *ctcp = (void *)(eth + 1);
         if ((void *)(ctcp + 1) > data_end) return XDP_DROP;
 
@@ -774,6 +694,8 @@ int xdp_decompress_main(struct xdp_md *ctx) {
         eth = data;
         if ((void *)(eth + 1) > data_end) return XDP_DROP;
         
+        __builtin_memcpy(eth->h_dest,   dst_mac, 6);
+        __builtin_memcpy(eth->h_source, src_mac, 6);
         eth->h_proto = bpf_htons(ETH_P_IPV6);
 
         struct ipv6hdr *ipv6h = (void *)(eth + 1);
